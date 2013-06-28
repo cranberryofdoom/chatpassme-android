@@ -17,4 +17,7 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+    <style name="styleName" parent="android:Widget.Holo.Light.Button">
+        <item name="android:drawableTop">@drawable/ic_tab_home</item>
+    </style>
 </resources>

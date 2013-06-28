@@ -22,24 +22,83 @@ public final class R {
     }
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
+        public static final int ic_tab_contacts=0x7f020001;
+        public static final int ic_tab_convos=0x7f020002;
+        public static final int ic_tab_create=0x7f020003;
+        public static final int ic_tab_home=0x7f020004;
+        public static final int ic_tab_profile=0x7f020005;
     }
     public static final class id {
-        public static final int action_settings=0x7f080004;
-        public static final int gridView1=0x7f080001;
-        public static final int tab1=0x7f080000;
-        public static final int tab2=0x7f080002;
-        public static final int tab3=0x7f080003;
+        public static final int button1=0x7f070023;
+        public static final int cliks=0x7f070024;
+        public static final int contacts=0x7f070003;
+        public static final int contacts_grid_view=0x7f07001a;
+        public static final int convos=0x7f070005;
+        public static final int create=0x7f070004;
+        public static final int everyone=0x7f070011;
+        public static final int fragment_content=0x7f070000;
+        public static final int friends=0x7f070015;
+        public static final int home=0x7f070002;
+        public static final int home_grid_view=0x7f070021;
+        public static final int imageButton1=0x7f070022;
+        public static final int layout_whistle_clik_count=0x7f07002b;
+        public static final int layout_whistle_image=0x7f070028;
+        public static final int layout_whistle_question=0x7f070029;
+        public static final int layout_whistle_user_image=0x7f07002a;
+        public static final int linearLayout1=0x7f07000e;
+        public static final int nav_bar=0x7f070001;
+        public static final int photo=0x7f07001f;
+        public static final int pods=0x7f070026;
+        public static final int profile=0x7f070006;
+        public static final int rating=0x7f070020;
+        public static final int school=0x7f070013;
+        public static final int searchView1=0x7f070019;
+        public static final int stats=0x7f070027;
+        public static final int text=0x7f07001e;
+        public static final int textView1=0x7f070017;
+        public static final int view_whistle_click_count=0x7f07000c;
+        public static final int view_whistle_create_comment=0x7f070008;
+        public static final int view_whistle_everyone_response=0x7f070012;
+        public static final int view_whistle_friends_response=0x7f070016;
+        public static final int view_whistle_header=0x7f07000a;
+        public static final int view_whistle_next=0x7f07000d;
+        public static final int view_whistle_profile_picture=0x7f07000b;
+        public static final int view_whistle_question=0x7f07000f;
+        public static final int view_whistle_question_image=0x7f070010;
+        public static final int view_whistle_school_response=0x7f070014;
+        public static final int view_whistle_send=0x7f070009;
+        public static final int view_whistle_send_comment=0x7f070007;
+        public static final int view_whistle_share=0x7f070018;
+        public static final int whistle=0x7f07001b;
+        public static final int whistle_photo=0x7f07001d;
+        public static final int whistle_text=0x7f07001c;
+        public static final int whistles=0x7f070025;
     }
     public static final class layout {
-        public static final int activity_home=0x7f030000;
-    }
-    public static final class menu {
-        public static final int home=0x7f070000;
+        public static final int activity_main=0x7f030000;
+        public static final int activity_view_whistle=0x7f030001;
+        public static final int fragment_contacts=0x7f030002;
+        public static final int fragment_convos=0x7f030003;
+        public static final int fragment_create=0x7f030004;
+        public static final int fragment_home=0x7f030005;
+        public static final int fragment_profile=0x7f030006;
+        public static final int layout_whistle=0x7f030007;
     }
     public static final class string {
-        public static final int action_settings=0x7f050001;
+        public static final int action_settings=0x7f050003;
         public static final int app_name=0x7f050000;
-        public static final int hello_world=0x7f050002;
+        public static final int comments=0x7f05000c;
+        public static final int contacts=0x7f050005;
+        public static final int convos=0x7f050007;
+        public static final int create=0x7f050006;
+        public static final int create_question_hint=0x7f05000d;
+        public static final int edit_profile=0x7f05000a;
+        public static final int home=0x7f050004;
+        public static final int menu_settings=0x7f050001;
+        public static final int profile=0x7f050008;
+        public static final int send=0x7f05000b;
+        public static final int title_activity_main=0x7f050002;
+        public static final int whistle_photo=0x7f050009;
     }
     public static final class style {
         /** 
@@ -68,5 +127,6 @@ public final class R {
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f060001;
+        public static final int styleName=0x7f060002;
     }
 }

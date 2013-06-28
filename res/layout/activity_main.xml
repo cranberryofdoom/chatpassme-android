@@ -1,0 +1,65 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+    
+	<FrameLayout
+	    android:id="@+id/fragment_content"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:layout_above="@+id/nav_bar" />
+
+    <LinearLayout
+        android:id="@+id/nav_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" >
+
+        <ImageButton
+            android:id="@+id/home"
+            android:contentDescription="@string/home"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_tab_home"
+            android:onClick="loadHomeFragment" />
+
+        <ImageButton
+            android:id="@+id/contacts"
+            android:contentDescription="@string/contacts"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_tab_contacts"
+            android:onClick="loadContactsFragment" />
+
+        <ImageButton
+            android:id="@+id/create"
+            android:contentDescription="@string/create"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_tab_create"
+            android:onClick="loadCreateFragment" />
+
+        <ImageButton
+            android:id="@+id/convos"
+            android:contentDescription="@string/convos"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_tab_convos"
+            android:onClick="loadConvosFragment" />
+
+        <ImageButton
+            android:id="@+id/profile"
+            android:contentDescription="@string/profile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_tab_profile"
+            android:onClick="loadProfileFragment"  />
+    </LinearLayout>
+
+</RelativeLayout>
