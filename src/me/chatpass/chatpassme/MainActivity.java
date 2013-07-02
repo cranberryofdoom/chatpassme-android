@@ -1,6 +1,7 @@
 package me.chatpass.chatpassme;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.View;
@@ -30,8 +31,8 @@ public class MainActivity extends Activity {
 
 		// Immediately load the home fragment
 		FragmentTransaction t = getFragmentManager().beginTransaction();
-		HomeFragment homeF = new HomeFragment();
-		t.add(R.id.fragment_content, homeF);
+		CreateFragment createF = new CreateFragment();
+		t.add(R.id.fragment_content, createF);
 		t.commit();
 	}
 
@@ -73,5 +74,17 @@ public class MainActivity extends Activity {
 		ProfileFragment profileF = new ProfileFragment();
 		t.replace(R.id.fragment_content, profileF);
 		t.commit();
+	}
+	
+	// call the choose image dialog fragment if choose image buttons are pressed
+	public void chooseImage(View view){
+		DialogFragment newFragment = new ChooseImageDialogFragment();
+	    newFragment.show(getFragmentManager(), "createImage");
+	}
+	
+	// call the choose profile picture dialog fragment if choose image buttons are pressed
+	public void chooseProfilePicture(View view){
+		DialogFragment newFragment = new ChooseProfilePictureDialogFragment();
+	    newFragment.show(getFragmentManager(), "createProfilePicture");
 	}
 }

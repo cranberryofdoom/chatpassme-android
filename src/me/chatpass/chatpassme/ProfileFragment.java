@@ -3,6 +3,7 @@ package me.chatpass.chatpassme;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

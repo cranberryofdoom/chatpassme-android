@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class WhistleGridAdapter extends BaseAdapter {
@@ -15,13 +16,16 @@ public class WhistleGridAdapter extends BaseAdapter {
 	private String[] mQuesTxt;
 	private int[] mHitCount;
 	private ArrayList<Bitmap> mQuesImg;
+	private ArrayList<Bitmap> mUserImg;
 
 	// Constructor
-	public WhistleGridAdapter(Context c, String[] quesTxt, int[] hitCount) {
+	public WhistleGridAdapter(Context c, String[] quesTxt, int[] hitCount,
+			ArrayList<Bitmap> quesImg, ArrayList<Bitmap> userImg) {
 		mContext = c;
 		mQuesTxt = quesTxt;
 		mHitCount = hitCount;
-		// mQuesImg = quesImg;
+		mQuesImg = quesImg;
+		mUserImg = userImg;
 	}
 
 	@Override
@@ -57,7 +61,7 @@ public class WhistleGridAdapter extends BaseAdapter {
 		} else {
 			gridView = (View) convertView;
 		}
-		
+
 		// Push all question texts into the layout_whistle_question
 		TextView layoutWhistleQuestion = (TextView) gridView
 				.findViewById(R.id.layout_whistle_question);
@@ -67,6 +71,16 @@ public class WhistleGridAdapter extends BaseAdapter {
 		TextView layoutWhistleClikCount = (TextView) gridView
 				.findViewById(R.id.layout_whistle_clik_count);
 		layoutWhistleClikCount.setText(String.valueOf(mHitCount[position]));
+
+		// Push all the whistle images into the layout_whistle_image
+		ImageView layoutWhistleImage = (ImageView) gridView
+				.findViewById(R.id.layout_whistle_image);
+		layoutWhistleImage.setImageBitmap(mQuesImg.get(position));
+
+		// Push all the whistle images into the layout_whistle_image
+		ImageView layoutUserImage = (ImageView) gridView
+				.findViewById(R.id.layout_user_image);
+		layoutUserImage.setImageBitmap(mUserImg.get(position));
 
 		return gridView;
 	}

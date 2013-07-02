@@ -1,5 +1,6 @@
 package me.chatpass.chatpassme;
 
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,7 +17,7 @@ public class CreateFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		final View view = inflater.inflate(R.layout.fragment_profile,
+		final View view = inflater.inflate(R.layout.fragment_create,
 				container, false);
 
 		tabHost = (TabHost) view.findViewById(R.id.tabhost);
@@ -41,4 +42,10 @@ public class CreateFragment extends Fragment {
 		return view;
 
 	}
+	
+	public void chooseImage(View view){
+		DialogFragment newFragment = new ChooseImageDialogFragment();
+	    newFragment.show(getFragmentManager(), "createImage");
+	}
+	
 }

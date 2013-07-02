@@ -19,6 +19,11 @@
     <string name="create_answer_hint_2">Clik 2</string>
     <string name="create_answer_hint_3">Clik 3 (optional)</string>
     <string name="create_answer_hint_4">Clik 4 (optional)</string>
+    <string name="choose_image">Choose an image</string>
+    <string name="cancel">Cancel</string>
+    <string name="search">Search</string>
+    <string name="upload">Upload</string>
+    <string name="take">Take</string>
     
 
 </resources>
