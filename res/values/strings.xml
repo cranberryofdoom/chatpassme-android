@@ -15,6 +15,10 @@
     <string name="send">Send</string>
     <string name="comments">Comments</string>
     <string name="create_question_hint">Post A Whistle</string>
+    <string name="create_answer_hint_1">Clik 1</string>
+    <string name="create_answer_hint_2">Clik 2</string>
+    <string name="create_answer_hint_3">Clik 3 (optional)</string>
+    <string name="create_answer_hint_4">Clik 4 (optional)</string>
     
 
 </resources>

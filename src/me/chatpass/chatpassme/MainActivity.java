@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.parse.Parse;
 import com.parse.ParseAnalytics;
-import com.parse.ParseObject;
+import com.parse.ParseInstallation;
 
 public class MainActivity extends Activity {
 
@@ -19,6 +19,11 @@ public class MainActivity extends Activity {
 		Parse.initialize(this, "N1j4C4EpAYnq44vlpbZnwK0BIdBGAAgPDnyQMZsu",
 				"WdjH2YPmpF14Bo3N0uTpGasp7upf7jn6NIpFDyqW");
 		ParseAnalytics.trackAppOpened(getIntent());
+		
+		// Get Installation Id
+		final ParseInstallation id = ParseInstallation.getCurrentInstallation();		
+		id.put("phoneNumber", "jgkfdljgkld");
+		id.saveInBackground();
 		
 		// Set the view to activity_main.xml
 		setContentView(R.layout.activity_main);

@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    tools:context=".ProfileFragment" >
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="100dp" >
 
         <ImageButton
-            android:id="@+id/imageButton1"
+            android:id="@+id/profile_picture"
             android:layout_width="0dip"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:src="@drawable/ic_tab_profile" />
+            android:layout_weight="1" />
 
         <RelativeLayout
             android:layout_width="0dip"
@@ -27,36 +28,39 @@
                 android:layout_above="@+id/button1"
                 android:orientation="horizontal" >
 
-                <EditText
+                <TextView
+                    android:id="@+id/profile_clik_count"
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
-                    android:inputType="text" />
+                    android:gravity="center" />
 
-                <EditText
+                <TextView
+                    android:id="@+id/profile_whistle_count"
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
-                    android:inputType="text" />
+                    android:gravity="center" />
 
-                <EditText
+                <TextView
+                    android:id="@+id/profile_pod_count"
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
-                    android:inputType="text" />
+                    android:gravity="center" />
             </LinearLayout>
 
             <Button
                 android:id="@+id/button1"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/edit_profile"
-                android:layout_alignParentBottom="true" />
+                android:layout_alignParentBottom="true"
+                android:text="@string/edit_profile" />
         </RelativeLayout>
     </LinearLayout>
 
     <TabHost
-        android:id="@android:id/tabhost"
+        android:id="@+id/tabhost"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
@@ -81,6 +85,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal" >
+
+                    <ListView
+                        android:id="@+id/profile_cliks"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -88,6 +97,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal" >
+
+                    <ListView
+                        android:id="@+id/profile_whistles"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
                 </LinearLayout>
 
                 <LinearLayout

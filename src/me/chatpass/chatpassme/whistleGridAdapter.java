@@ -10,14 +10,14 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-public class whistleGridAdapter extends BaseAdapter {
+public class WhistleGridAdapter extends BaseAdapter {
 	private Context mContext;
 	private String[] mQuesTxt;
 	private int[] mHitCount;
 	private ArrayList<Bitmap> mQuesImg;
 
 	// Constructor
-	public whistleGridAdapter(Context c, String[] quesTxt, int[] hitCount) {
+	public WhistleGridAdapter(Context c, String[] quesTxt, int[] hitCount) {
 		mContext = c;
 		mQuesTxt = quesTxt;
 		mHitCount = hitCount;

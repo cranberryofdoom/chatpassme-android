@@ -15,8 +15,8 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:ems="10"
-            android:inputType="textMultiLine"
-            android:hint="@string/create_question_hint" >
+            android:hint="@string/create_question_hint"
+            android:inputType="textMultiLine" >
 
             <requestFocus />
         </EditText>
@@ -56,7 +56,40 @@
                     android:id="@+id/text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal" >
+                    android:orientation="vertical" >
+
+                    <EditText
+                        android:id="@+id/editText2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/create_answer_hint_1"
+                        android:ems="10" />
+
+                    <EditText
+                        android:id="@+id/editText4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/create_answer_hint_2"
+                        android:ems="10" />
+
+                    <EditText
+                        android:id="@+id/editText3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/create_answer_hint_3"
+                        android:ems="10" />
+
+                    <EditText
+                        android:id="@+id/editText1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/create_answer_hint_4"
+                        android:ems="10" />
+
                 </LinearLayout>
 
                 <LinearLayout

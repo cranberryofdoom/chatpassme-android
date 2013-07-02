@@ -24,7 +24,7 @@ import com.parse.ParseQuery;
 public class HomeFragment extends Fragment {
 
 	private GridView gridView;
-	private whistleGridAdapter gridAdapter;
+	private WhistleGridAdapter gridAdapter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,7 +48,7 @@ public class HomeFragment extends Fragment {
 		// If there is an activity linked to this fragment
 		if (activity != null) {
 
-			// Create a Parse object query and ask for the VoteQues class
+			// Create a ParseObject query and ask for the VoteQues class
 			ParseQuery<ParseObject> query = ParseQuery.getQuery("VoteQues");
 
 			// Tell Parse to find it
@@ -59,7 +59,7 @@ public class HomeFragment extends Fragment {
 
 					// If there is no exception
 					if (e == null) {
-						
+
 						// Initialize String array of question texts
 						String[] quesTxt = new String[objects.size()];
 
@@ -90,26 +90,21 @@ public class HomeFragment extends Fragment {
 							Log.i("WTF", "" + pQuesImg[i]);
 							Log.i("WTF", "" + i);
 							if (pQuesImg[i] != null) {
-								pQuesImg[i]
-										.getDataInBackground(new GetDataCallback() {
-											public void done(byte[] data,
-													ParseException e) {
-												if (e == null) {
-													quesImg.add(BitmapFactory
-															.decodeByteArray(
-																	data, 0,
-																	data.length));
-												} else {
-												}
-											}
-										});
+								try {
+									byte[] data = pQuesImg[i].getData();
+									quesImg.add(BitmapFactory.decodeByteArray(
+											data, 0, data.length));
+								} catch (ParseException e1) {
+									Log.i("", "error ):");
+								}
 							} else {
 								quesImg.add(null);
 							}
+
 						}
 
 						// Create a new adapter
-						gridAdapter = new whistleGridAdapter(activity, quesTxt,
+						gridAdapter = new WhistleGridAdapter(activity, quesTxt,
 								hitCount);
 
 						// Set the adapter
