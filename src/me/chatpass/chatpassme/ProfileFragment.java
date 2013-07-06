@@ -33,8 +33,8 @@ public class ProfileFragment extends Fragment {
 	private int whistleCount;
 	private int clikCount;
 	private int podCount;
-	private List<String> cliks = new ArrayList<String>();
-	private List<String> whistles = new ArrayList<String>();
+	private ArrayList<String> cliks = new ArrayList<String>();
+	private ArrayList<String> whistles = new ArrayList<String>();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -26,6 +26,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="me.chatpass.chatpassme.ViewWhistleActivity"
+            android:label="@string/title_activity_view_whistle"
+            android:parentActivityName="me.chatpass.chatpassme.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="me.chatpass.chatpassme.MainActivity" />
+        </activity>
+        <activity
+            android:name="me.chatpass.chatpassme.SelectAPodActivity"
+            android:label="@string/title_activity_select_apod"
+            android:parentActivityName="me.chatpass.chatpassme.ViewWhistleActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="me.chatpass.chatpassme.ViewWhistleActivity" />
+        </activity>
     </application>
 
 </manifest>

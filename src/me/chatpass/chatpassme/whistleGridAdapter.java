@@ -2,6 +2,7 @@ package me.chatpass.chatpassme;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -13,29 +14,29 @@ import android.widget.TextView;
 
 public class WhistleGridAdapter extends BaseAdapter {
 	private Context mContext;
-	private String[] mQuesTxt;
-	private int[] mHitCount;
+	private ArrayList<String> mQuesTxt;
+	private ArrayList<Integer> mHitCount;
 	private ArrayList<Bitmap> mQuesImg;
 	private ArrayList<Bitmap> mUserImg;
 
 	// Constructor
-	public WhistleGridAdapter(Context c, String[] quesTxt, int[] hitCount,
-			ArrayList<Bitmap> quesImg, ArrayList<Bitmap> userImg) {
+	public WhistleGridAdapter(Context c, ArrayList<String> quesTxt,
+			ArrayList<Integer> hitCount, ArrayList<Bitmap> quesImg,
+			ArrayList<Bitmap> userImg) {
 		mContext = c;
 		mQuesTxt = quesTxt;
 		mHitCount = hitCount;
 		mQuesImg = quesImg;
-		mUserImg = userImg;
-	}
+		mUserImg = userImg;	}
 
 	@Override
 	public int getCount() {
-		return mQuesTxt.length;
+		return mQuesTxt.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return mQuesTxt[position];
+		return mQuesTxt.get(position);
 	}
 
 	@Override
@@ -65,12 +66,12 @@ public class WhistleGridAdapter extends BaseAdapter {
 		// Push all question texts into the layout_whistle_question
 		TextView layoutWhistleQuestion = (TextView) gridView
 				.findViewById(R.id.layout_whistle_question);
-		layoutWhistleQuestion.setText(mQuesTxt[position]);
+		layoutWhistleQuestion.setText(mQuesTxt.get(position));
 
 		// Push all clik counts into the layout_whistle_clik_count
 		TextView layoutWhistleClikCount = (TextView) gridView
 				.findViewById(R.id.layout_whistle_clik_count);
-		layoutWhistleClikCount.setText(String.valueOf(mHitCount[position]));
+		layoutWhistleClikCount.setText(String.valueOf(mHitCount.get(position)));
 
 		// Push all the whistle images into the layout_whistle_image
 		ImageView layoutWhistleImage = (ImageView) gridView

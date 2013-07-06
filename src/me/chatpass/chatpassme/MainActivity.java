@@ -3,7 +3,10 @@ package me.chatpass.chatpassme;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.parse.Parse;
@@ -11,7 +14,7 @@ import com.parse.ParseAnalytics;
 import com.parse.ParseInstallation;
 
 public class MainActivity extends Activity {
-
+		
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -22,16 +25,14 @@ public class MainActivity extends Activity {
 		ParseAnalytics.trackAppOpened(getIntent());
 		
 		// Get Installation Id
-		final ParseInstallation id = ParseInstallation.getCurrentInstallation();		
-		id.put("phoneNumber", "jgkfdljgkld");
-		id.saveInBackground();
+		final ParseInstallation id = ParseInstallation.getCurrentInstallation();
 		
 		// Set the view to activity_main.xml
 		setContentView(R.layout.activity_main);
 
 		// Immediately load the home fragment
 		FragmentTransaction t = getFragmentManager().beginTransaction();
-		CreateFragment createF = new CreateFragment();
+		HomeFragment createF = new HomeFragment();
 		t.add(R.id.fragment_content, createF);
 		t.commit();
 	}
@@ -54,10 +55,11 @@ public class MainActivity extends Activity {
 
 	// Load the create fragment if the create button is pressed
 	public void loadCreateFragment(View view) {
+		
 		FragmentTransaction t = getFragmentManager().beginTransaction();
 		CreateFragment createF = new CreateFragment();
 		t.replace(R.id.fragment_content, createF);
-		t.commit();
+		t.commit();	
 	}
 
 	// load the convos fragment if the convos button is pressed
@@ -86,5 +88,12 @@ public class MainActivity extends Activity {
 	public void chooseProfilePicture(View view){
 		DialogFragment newFragment = new ChooseProfilePictureDialogFragment();
 	    newFragment.show(getFragmentManager(), "createProfilePicture");
+	}
+	
+	// go to select a pod if done making question
+	public void selectAPod(MenuItem item) {
+		Intent intent = new Intent(this,
+				SelectAPodActivity.class);
+		startActivity(intent);
 	}
 }

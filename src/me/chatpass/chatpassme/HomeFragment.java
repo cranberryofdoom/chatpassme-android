@@ -1,18 +1,23 @@
 package me.chatpass.chatpassme;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 
 import com.parse.FindCallback;
@@ -25,6 +30,13 @@ public class HomeFragment extends Fragment {
 
 	private GridView gridView;
 	private WhistleGridAdapter gridAdapter;
+	private ArrayList<String> objectId = new ArrayList<String>();
+	private ArrayList<String> quesTxt = new ArrayList<String>();
+	private ArrayList<Integer> hitCount = new ArrayList<Integer>();
+	private ArrayList<Bitmap> quesImg = new ArrayList<Bitmap>();
+	private ArrayList<byte[]> dataQuesImg = new ArrayList<byte[]>();
+	private ArrayList<Bitmap> userImg = new ArrayList<Bitmap>();
+	private ArrayList<byte[]> dataUserImg = new ArrayList<byte[]>();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,7 +47,7 @@ public class HomeFragment extends Fragment {
 
 		// Identify which grid view we're going to load data into
 		gridView = (GridView) view.findViewById(R.id.home_grid_view);
-
+		
 		return view;
 	}
 
@@ -44,12 +56,22 @@ public class HomeFragment extends Fragment {
 
 		// Get the activity that this fragment is called from
 		final Activity activity = getActivity();
+		
+		Resources res = getResources();
+		Drawable drawable = res.getDrawable(R.drawable.whistle_placeholder);
+		final Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+		final byte[] bitMapData = stream.toByteArray();
+		
 
 		// If there is an activity linked to this fragment
 		if (activity != null) {
 
 			// Create a ParseObject query and ask for the VoteQues class
 			ParseQuery<ParseObject> query = ParseQuery.getQuery("VoteQues");
+
+			query.setLimit(5);
 
 			// Tell Parse to find it
 			query.findInBackground(new FindCallback<ParseObject>() {
@@ -60,27 +82,20 @@ public class HomeFragment extends Fragment {
 					// If there is no exception
 					if (e == null) {
 
-						// Initialize String array of question texts
-						String[] quesTxt = new String[objects.size()];
-
-						// Initialize int array of number of cliks
-						int[] hitCount = new int[objects.size()];
-
-						// Initialize String array of question image urls
-						final ArrayList<Bitmap> quesImg = new ArrayList<Bitmap>();
-
-						final ArrayList<Bitmap> userImg = new ArrayList<Bitmap>();
-
 						// Retrieve data from Parse and push all data into
 						// respective arrays
 						for (int i = 0; i < objects.size(); i++) {
 							// Log.e("NUMBER", "" + i);
+							
+							//Log.i("WTF", objects.get(i).getObjectId());
+
+							objectId.add(i, objects.get(i).getObjectId());
 
 							// Get whistle question string from ParseObject
-							quesTxt[i] = objects.get(i).getString("quesTxt");
+							quesTxt.add(i, objects.get(i).getString("quesTxt"));
 
 							// Get number of cliks from ParseObject
-							hitCount[i] = objects.get(i).getInt("hitCount");
+							hitCount.add(i, objects.get(i).getInt("hitCount"));
 
 							// Get question image
 							ParseFile pQuesImg = objects.get(i).getParseFile(
@@ -88,18 +103,24 @@ public class HomeFragment extends Fragment {
 
 							if (pQuesImg != null) {
 								try {
-									//Log.w("WHISTLE IMAGE", "MY ANUS IS BLEEDING");
+									// Log.w("WHISTLE IMAGE",
+									// "MY SPOON IS TOO BIG");
 									byte[] data = pQuesImg.getData();
+									dataQuesImg.add(data);
 									quesImg.add(decodeSampledBitmap(data, 200,
 											100));
 								} catch (ParseException e1) {
+									dataQuesImg.add(bitMapData);
+									quesImg.add(bitmap);
 								}
 							} else {
-								quesImg.add(null);
+								dataQuesImg.add(bitMapData);
+								quesImg.add(bitmap);
 							}
 
 							// Get the userId from the ParseObject
 							Number userId = objects.get(i).getNumber("userId");
+							
 
 							// Ask for the Users class
 							ParseQuery<ParseObject> user = ParseQuery
@@ -111,8 +132,9 @@ public class HomeFragment extends Fragment {
 								ParseObject pUser = user.getFirst();
 								ParseFile pUserImg = pUser
 										.getParseFile("imageFile");
-								//Log.w("USER IMAGE", "I AM A BANANA");
+								// Log.w("USER IMAGE", "I AM A BANANA");
 								byte[] data = pUserImg.getData();
+								dataUserImg.add(data);
 								userImg.add(decodeSampledBitmap(data, 50, 50));
 							} catch (ParseException e1) {
 							}
@@ -124,6 +146,27 @@ public class HomeFragment extends Fragment {
 
 						// Set the adapter
 						gridView.setAdapter(gridAdapter);
+
+						// Show the whistle when one of the grid items are
+						// clicked on
+						gridView.setOnItemClickListener(new OnItemClickListener() {
+							public void onItemClick(AdapterView<?> parent,
+									View v, int position, long id) {
+								Intent intent = new Intent(activity,
+										ViewWhistleActivity.class);
+								intent.putExtra("iObjectId",
+										objectId.get(position));
+								intent.putExtra("iQuesTxt",
+										quesTxt.get(position));
+								intent.putExtra("iHitCount",
+										hitCount.get(position));
+								intent.putExtra("iUserImg",
+										dataUserImg.get(position));
+								intent.putExtra("iQuesImg",
+										dataQuesImg.get(position));
+								startActivity(intent);
+							}
+						});
 					}
 				}
 			});
@@ -136,8 +179,8 @@ public class HomeFragment extends Fragment {
 		final int height = options.outHeight;
 		final int width = options.outWidth;
 
-		//Log.i("WHEE", "height ma bob " + height);
-		//Log.i("WHEE", "width ma bob " + width);
+		// Log.i("WHEE", "height ma bob " + height);
+		// Log.i("WHEE", "width ma bob " + width);
 		int inSampleSize = 64;
 
 		if (height > reqHeight || width > reqWidth) {
@@ -152,7 +195,7 @@ public class HomeFragment extends Fragment {
 			// guarantee a final image with both dimensions larger than or equal
 			// to the requested height and width.
 			inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
-			//Log.i("WHEE", "sample size ma bob " + inSampleSize);
+			// Log.i("WHEE", "sample size ma bob " + inSampleSize);
 		}
 
 		return inSampleSize;

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="ContentDescription">
+        <ignore path="res/layout/activity_view_whistle.xml" />
+        <ignore path="res/layout/fragment_profile.xml" />
+    </issue>
+</lint>
