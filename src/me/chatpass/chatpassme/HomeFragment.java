@@ -72,7 +72,7 @@ public class HomeFragment extends Fragment {
 			ParseQuery<ParseObject> query = ParseQuery.getQuery("VoteQues");
 
 			query.setLimit(5);
-
+			query.addAscendingOrder("createdAt");
 			// Tell Parse to find it
 			query.findInBackground(new FindCallback<ParseObject>() {
 

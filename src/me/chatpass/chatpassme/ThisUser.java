@@ -1,6 +1,5 @@
 package me.chatpass.chatpassme;
 
-import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
@@ -14,25 +13,21 @@ public class ThisUser {
 	// Constructor
 	public ThisUser(final ParseInstallation id) {
 
-		// Get user's phoneNumber
+		// Get this user's phone number
 		phoneNumber = id.getString("phoneNumber");
 
-		// Create a Parse object query and ask for the Users class
+		// Create a ParseObject query and ask for the Users class
 		ParseQuery<ParseObject> qUsers = ParseQuery.getQuery("Users");
 
 		// Ask for the specific phone number that is correlated to the user
 		qUsers.whereEqualTo("phoneNumber", phoneNumber);
 
-		// Find the first object that matches that shows up
-		qUsers.getFirstInBackground(new GetCallback<ParseObject>() {
-			public void done(ParseObject object, ParseException e) {
-				if (e == null) {
-
-					// Get user's user id from that object
-					myUserId = id.getNumber("userId");
-				}
-			}
-		});	
+		// Get this user's id
+		try {
+			myUserId = qUsers.getFirst().getNumber("userId");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public Number userId() {
