@@ -1,5 +1,8 @@
 package me.chatpass.chatpassme;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
@@ -8,12 +11,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,6 +26,7 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -30,32 +35,318 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 public class ViewWhistleActivity extends Activity {
-
 	private TabHost tabHost;
-	private String objectId;
-	private Number quesId;
+	private CommentGridAdapter gridAdapter;
+	private GridView gridView;
 	private DialogFragment reportWhistleFragment;
-	private String ansType;
+
+	private String objectId;
+	private String quesTxt;
+	private Number quesId;
 	private Integer hitCount;
+	private byte[] quesImg;
+	private byte[] userImg;
+	private String ansType;
 	private ParseObject voteQues;
-	private byte[] dAnsOptImg1;
-	private byte[] dAnsOptImg2;
-	private byte[] dAnsOptImg3;
-	private byte[] dAnsOptImg4;
+
+	private ImageButton iButton1;
+	private ImageButton iButton2;
+	private ImageButton iButton3;
+	private ImageButton iButton4;
+	private Button button1;
+	private Button button2;
+	private Button button3;
+	private Button button4;
+
+	// Temporary user Id
+	private Number myUserId = 257;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_whistle);
+
+		// Retrieve all data from the last activity
 		Intent intent = getIntent();
 		objectId = intent.getStringExtra("iObjectId");
-		final String quesTxt = intent.getStringExtra("iQuesTxt");
+		quesTxt = intent.getStringExtra("iQuesTxt");
 		hitCount = intent.getIntExtra("iHitCount", 0);
-		final byte[] quesImg = intent.getByteArrayExtra("iQuesImg");
-		final byte[] userImg = intent.getByteArrayExtra("iUserImg");
+		quesImg = intent.getByteArrayExtra("iQuesImg");
+		userImg = intent.getByteArrayExtra("iUserImg");
 
 		// Show the Up button in the action bar
 		setupActionBar();
+
+		// Set the basic information about the whistle
+		setupWhistleInfo();
+
+		// Check if this user has seen this whistle or not
+		ParseQuery<ParseObject> qVoteAnswer = ParseQuery.getQuery("voteAnswer");
+		qVoteAnswer.whereEqualTo("quesId", quesId);
+		qVoteAnswer.whereEqualTo("userId", myUserId);
+		qVoteAnswer.getFirstInBackground(new GetCallback<ParseObject>() {
+			public void done(ParseObject object, ParseException e) {
+
+				// Get the type of question this whistle is
+				ansType = voteQues.getString("ansType");
+
+				// If this user has not answered the question before
+				if (object == null) {
+					if (ansType.equals("TXT")) {
+						setupTextAnswer();
+					}
+
+					else if (ansType.equals("PHOT")) {
+						setupImageAnswer();
+					}
+
+					else if (ansType.equals("RATE")) {
+						setupRatingAnswer();
+					}
+				}
+
+				// If this user answered the question before
+				else {
+
+					// Setup everything with the tabs but disable buttons
+					if (ansType.equals("TXT")) {
+						setupTextAnswer();
+					} else if (ansType.equals("PHOT")) {
+						setupImageAnswer();
+					} else if (ansType.equals("RATE")) {
+						setupRatingAnswer();
+					}
+
+					// Set the tabs
+					setupResults();
+				}
+			}
+		});
+
+		// Set the comments
+		setupComments();
+	}
+
+	private void setupActionBar() {
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.view_whistle, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			NavUtils.navigateUpFromSameTask(this);
+			return true;
+
+		case R.id.report:
+			reportWhistleFragment = new ReportWhistleDialogFragment();
+			reportWhistleFragment.show(getFragmentManager(), "reportWhistle");
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	// Set the buttons and the picture for the rate questions
+	private void setupRatingAnswer() {
+		LinearLayout viewWhistleAnswers = (LinearLayout) findViewById(R.id.view_whistle_answers);
+		Resources res = getResources();
+
+		// Get the rate question image
+		try {
+			if (voteQues.getParseFile("rateOptImg") != null) {
+				ParseFile rateOptImg = voteQues.getParseFile("rateOptImg");
+				byte[] dRateOptImg = rateOptImg.getData();
+				ImageView vRateOptImg = new ImageView(ViewWhistleActivity.this);
+				vRateOptImg.setImageBitmap(decodeSampledBitmap(dRateOptImg,
+						100, 200));
+				viewWhistleAnswers.addView(vRateOptImg);
+			}
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
+
+		// Setup all the buttons
+		iButton1 = new ImageButton(ViewWhistleActivity.this);
+		iButton1.setImageDrawable(res.getDrawable(R.drawable.ic_rating_yay));
+		iButton1.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				recordAnswer(1, true);
+			}
+		});
+
+		iButton2 = new ImageButton(ViewWhistleActivity.this);
+		iButton2.setImageDrawable(res.getDrawable(R.drawable.ic_rating_unsure));
+		iButton2.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				recordAnswer(2, true);
+			}
+		});
+
+		iButton3 = new ImageButton(ViewWhistleActivity.this);
+		iButton3.setImageDrawable(res.getDrawable(R.drawable.ic_rating_meh));
+		iButton3.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				recordAnswer(3, true);
+			}
+		});
+
+		iButton4 = new ImageButton(ViewWhistleActivity.this);
+		iButton4.setImageDrawable(res.getDrawable(R.drawable.ic_rating_ew));
+		iButton4.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				recordAnswer(4, true);
+			}
+		});
+
+		// Setup the row of rate buttons
+		LinearLayout rateRow = new LinearLayout(ViewWhistleActivity.this);
+		rateRow.setGravity(Gravity.CENTER);
+		viewWhistleAnswers.addView(rateRow);
+
+		TextView love = new TextView(ViewWhistleActivity.this);
+		love.setText("LOVE");
+		TextView hate = new TextView(ViewWhistleActivity.this);
+		hate.setText("HATE");
+
+		rateRow.addView(love);
+		rateRow.addView(iButton1);
+		rateRow.addView(iButton2);
+		rateRow.addView(iButton3);
+		rateRow.addView(iButton4);
+		rateRow.addView(hate);
+	}
+
+	// Set the buttons for the photo questions
+	private void setupImageAnswer() {
+		LinearLayout viewWhistleAnswers = (LinearLayout) findViewById(R.id.view_whistle_answers);
+		LayoutParams param = new LinearLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, 1.0f);
+
+		// Setup and add the first row of images
+		LinearLayout answersRow1 = new LinearLayout(ViewWhistleActivity.this);
+		viewWhistleAnswers.addView(answersRow1);
+
+		// Setup the second row of images
+		LinearLayout answersRow2 = new LinearLayout(ViewWhistleActivity.this);
+
+		// Set all the buttons and the corresponding images
+		try {
+			ParseFile ansOptImg1 = voteQues.getParseFile("ansOptImg1");
+			byte[] dAnsOptImg1 = ansOptImg1.getData();
+			iButton1 = new ImageButton(ViewWhistleActivity.this);
+			iButton1.setLayoutParams(param);
+			iButton1.setImageBitmap(decodeSampledBitmap(dAnsOptImg1, 50, 50));
+			answersRow1.addView(iButton1);
+			iButton1.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					recordAnswer(1, false);
+				}
+			});
+
+			ParseFile ansOptImg2 = voteQues.getParseFile("ansOptImg2");
+			byte[] dAnsOptImg2 = ansOptImg2.getData();
+			iButton2 = new ImageButton(ViewWhistleActivity.this);
+			iButton2.setLayoutParams(param);
+			iButton2.setImageBitmap(decodeSampledBitmap(dAnsOptImg2, 50, 50));
+			answersRow1.addView(iButton2);
+			iButton2.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					recordAnswer(2, false);
+				}
+			});
+
+			if (voteQues.getParseFile("ansOptImg3") != null) {
+				viewWhistleAnswers.addView(answersRow2);
+				ParseFile ansOptImg3 = voteQues.getParseFile("ansOptImg3");
+				byte[] dAnsOptImg3 = ansOptImg3.getData();
+				iButton3 = new ImageButton(ViewWhistleActivity.this);
+				iButton3.setLayoutParams(param);
+				iButton3.setImageBitmap(decodeSampledBitmap(dAnsOptImg3, 50, 50));
+				answersRow2.addView(iButton3);
+				iButton3.setOnClickListener(new View.OnClickListener() {
+					public void onClick(View v) {
+						recordAnswer(3, false);
+					}
+				});
+			}
+
+			if (voteQues.getParseFile("ansOptImg4") != null) {
+				ParseFile ansOptImg4 = voteQues.getParseFile("ansOptImg4");
+				byte[] dAnsOptImg4 = ansOptImg4.getData();
+				iButton4 = new ImageButton(ViewWhistleActivity.this);
+				iButton4.setLayoutParams(param);
+				iButton4.setImageBitmap(decodeSampledBitmap(dAnsOptImg4, 50, 50));
+				answersRow2.addView(iButton4);
+				iButton4.setOnClickListener(new View.OnClickListener() {
+					public void onClick(View v) {
+						recordAnswer(4, false);
+					}
+				});
+			}
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	// Set the buttons for the text questions
+	private void setupTextAnswer() {
+		LinearLayout viewWhistleAnswers = (LinearLayout) findViewById(R.id.view_whistle_answers);
+
+		// Set all the buttons
+		String ansOptTxt1 = voteQues.getString("ansOptTxt1");
+		button1 = new Button(ViewWhistleActivity.this);
+		button1.setText(ansOptTxt1);
+		viewWhistleAnswers.addView(button1);
+		button1.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				recordAnswer(1, false);
+			}
+		});
+
+		String ansOptTxt2 = voteQues.getString("ansOptTxt2");
+		button2 = new Button(ViewWhistleActivity.this);
+		button2.setText(ansOptTxt2);
+		viewWhistleAnswers.addView(button2);
+		button2.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				recordAnswer(2, false);
+			}
+		});
+
+		if (voteQues.getString("ansOptTxt3") != null) {
+			String ansOptTxt3 = voteQues.getString("ansOptTxt3");
+			button3 = new Button(ViewWhistleActivity.this);
+			button3.setText(ansOptTxt3);
+			viewWhistleAnswers.addView(button3);
+			button3.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					recordAnswer(3, false);
+				}
+			});
+		}
+
+		if (voteQues.getString("ansOptTxt4") != null) {
+			String ansOptTxt4 = voteQues.getString("ansOptTxt4");
+			button4 = new Button(ViewWhistleActivity.this);
+			button4.setText(ansOptTxt4);
+			viewWhistleAnswers.addView(button4);
+			button4.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					recordAnswer(4, false);
+				}
+			});
+		}
+	}
+
+	// Set the basic information about the whistle
+	private void setupWhistleInfo() {
 
 		// Set the whistle question text
 		TextView viewWhistleQuestion = (TextView) findViewById(R.id.view_whistle_question);
@@ -79,10 +370,9 @@ public class ViewWhistleActivity extends Activity {
 		viewWhistleQuestionImage.setImageBitmap(decodeSampledBitmap(quesImg,
 				50, 50));
 
+		// Get the object id for this whistle
 		final ParseQuery<ParseObject> qVoteQues = ParseQuery
 				.getQuery("VoteQues");
-
-		// Get the ParseObject for this whistle
 		try {
 			voteQues = qVoteQues.get(objectId);
 		} catch (ParseException e) {
@@ -91,307 +381,6 @@ public class ViewWhistleActivity extends Activity {
 
 		// Get the question id for this whistle
 		quesId = voteQues.getNumber("quesId");
-
-		// Check if this user has seen this whistle or not
-		ParseQuery<ParseObject> qVoteAnswer = ParseQuery.getQuery("voteAnswer");
-		qVoteAnswer.whereEqualTo("quesId", quesId);
-		qVoteAnswer.whereEqualTo("userId", 257);
-		qVoteAnswer.getFirstInBackground(new GetCallback<ParseObject>() {
-			public void done(ParseObject object, ParseException e) {
-
-				// If this user has not answered the question before
-				if (object == null) {
-
-					// Get the type of question this whistle is
-					ansType = voteQues.getString("ansType");
-
-					// If the answer type is a text answer
-					if (ansType.equals("TXT")) {
-
-						// Find the layout to fill with content
-						LinearLayout viewWhistleAnswers = (LinearLayout) findViewById(R.id.view_whistle_answers);
-
-						// Get the first text option
-						String ansOptTxt1 = voteQues.getString("ansOptTxt1");
-						Button bAnsOptTxt1 = new Button(
-								ViewWhistleActivity.this);
-						bAnsOptTxt1.setText(ansOptTxt1);
-						viewWhistleAnswers.addView(bAnsOptTxt1);
-						bAnsOptTxt1
-								.setOnClickListener(new View.OnClickListener() {
-									public void onClick(View v) {
-										recordAnswer(1);
-									}
-								});
-						// Get the second text option
-						String ansOptTxt2 = voteQues.getString("ansOptTxt2");
-						Button bAnsOptTxt2 = new Button(
-								ViewWhistleActivity.this);
-						bAnsOptTxt2.setText(ansOptTxt2);
-						viewWhistleAnswers.addView(bAnsOptTxt2);
-						bAnsOptTxt2
-						.setOnClickListener(new View.OnClickListener() {
-							public void onClick(View v) {
-								recordAnswer(2);
-							}
-						});
-
-						// Get the third text option
-						if (voteQues.getString("ansOptTxt3") != null) {
-							String ansOptTxt3 = voteQues
-									.getString("ansOptTxt3");
-							Button bAnsOptTxt3 = new Button(
-									ViewWhistleActivity.this);
-							bAnsOptTxt3.setText(ansOptTxt3);
-							viewWhistleAnswers.addView(bAnsOptTxt3);
-							bAnsOptTxt3
-							.setOnClickListener(new View.OnClickListener() {
-								public void onClick(View v) {
-									recordAnswer(3);
-								}
-							});
-						}
-
-						// Get the fourth text option
-						if (voteQues.getString("ansOptTxt4") != null) {
-							String ansOptTxt4 = voteQues
-									.getString("ansOptTxt4");
-							Button bAnsOptTxt4 = new Button(
-									ViewWhistleActivity.this);
-							bAnsOptTxt4.setText(ansOptTxt4);
-							viewWhistleAnswers.addView(bAnsOptTxt4);
-							bAnsOptTxt4
-							.setOnClickListener(new View.OnClickListener() {
-								public void onClick(View v) {
-									recordAnswer(4);
-								}
-							});
-						}
-					}
-
-					// If the answer type is a photo answer
-					else if (ansType.equals("PHOT")) {
-
-						// Find the layout to fill with content
-						LinearLayout viewWhistleAnswers = (LinearLayout) findViewById(R.id.view_whistle_answers);
-
-						LayoutParams param = new LinearLayout.LayoutParams(
-								LayoutParams.MATCH_PARENT,
-								LayoutParams.WRAP_CONTENT, 1.0f);
-
-						// Setup the first row of images
-						LinearLayout answersRow1 = new LinearLayout(
-								ViewWhistleActivity.this);
-						viewWhistleAnswers.addView(answersRow1);
-
-						// Setup the second row of images
-						LinearLayout answersRow2 = new LinearLayout(
-								ViewWhistleActivity.this);
-
-						try {
-
-							// Get the first image option
-							ParseFile ansOptImg1 = voteQues
-									.getParseFile("ansOptImg1");
-							dAnsOptImg1 = ansOptImg1.getData();
-							ImageButton bAnsOptImg1 = new ImageButton(
-									ViewWhistleActivity.this);
-							bAnsOptImg1.setLayoutParams(param);
-							bAnsOptImg1.setImageBitmap(decodeSampledBitmap(
-									dAnsOptImg1, 50, 50));
-							answersRow1.addView(bAnsOptImg1);
-							bAnsOptImg1
-							.setOnClickListener(new View.OnClickListener() {
-								public void onClick(View v) {
-									recordAnswer(1);
-								}
-							});
-
-							// Get the second image option
-							ParseFile ansOptImg2 = voteQues
-									.getParseFile("ansOptImg2");
-							dAnsOptImg2 = ansOptImg2.getData();
-							ImageButton bAnsOptImg2 = new ImageButton(
-									ViewWhistleActivity.this);
-							bAnsOptImg2.setLayoutParams(param);
-							bAnsOptImg2.setImageBitmap(decodeSampledBitmap(
-									dAnsOptImg2, 50, 50));
-							answersRow1.addView(bAnsOptImg2);
-							bAnsOptImg2
-							.setOnClickListener(new View.OnClickListener() {
-								public void onClick(View v) {
-									recordAnswer(2);
-								}
-							});
-
-							// Get the third image option
-							if (voteQues.getParseFile("ansOptImg3") != null) {
-
-								// Add another row of images
-								viewWhistleAnswers.addView(answersRow2);
-
-								ParseFile ansOptImg3 = voteQues
-										.getParseFile("ansOptImg3");
-								dAnsOptImg3 = ansOptImg3.getData();
-								ImageButton bAnsOptImg3 = new ImageButton(
-										ViewWhistleActivity.this);
-								bAnsOptImg3.setLayoutParams(param);
-								bAnsOptImg3.setImageBitmap(decodeSampledBitmap(
-										dAnsOptImg3, 50, 50));
-								answersRow2.addView(bAnsOptImg3);
-								bAnsOptImg3
-								.setOnClickListener(new View.OnClickListener() {
-									public void onClick(View v) {
-										recordAnswer(3);
-									}
-								});
-							}
-
-							// Get the fourth image option
-							if (voteQues.getParseFile("ansOptImg4") != null) {
-								ParseFile ansOptImg4 = voteQues
-										.getParseFile("ansOptImg4");
-								dAnsOptImg4 = ansOptImg4.getData();
-								ImageButton bAnsOptImg4 = new ImageButton(
-										ViewWhistleActivity.this);
-								bAnsOptImg4.setLayoutParams(param);
-								bAnsOptImg4.setImageBitmap(decodeSampledBitmap(
-										dAnsOptImg4, 50, 50));
-								answersRow2.addView(bAnsOptImg4);
-								bAnsOptImg4
-								.setOnClickListener(new View.OnClickListener() {
-									public void onClick(View v) {
-										recordAnswer(4);
-									}
-								});
-							}
-						} catch (ParseException e1) {
-							e1.printStackTrace();
-						}
-					}
-
-					// If the answer type is a rating answer
-					else if (ansType.equals("RATE")) {
-
-						// Find the layout to fill with content
-						LinearLayout viewWhistleAnswers = (LinearLayout) findViewById(R.id.view_whistle_answers);
-
-						// Setup resources
-						Resources res = getResources();
-
-						try {
-							if (voteQues.getParseFile("rateOptImg") != null) {
-								ParseFile rateOptImg = voteQues
-										.getParseFile("rateOptImg");
-								byte[] dRateOptImg = rateOptImg.getData();
-								ImageView vRateOptImg = new ImageView(
-										ViewWhistleActivity.this);
-								vRateOptImg.setImageBitmap(decodeSampledBitmap(
-										dRateOptImg, 100, 200));
-								viewWhistleAnswers.addView(vRateOptImg);
-							}
-						} catch (ParseException e1) {
-							e1.printStackTrace();
-						}
-
-						// Setup all the buttons
-						ImageButton bAnsOptRate1 = new ImageButton(
-								ViewWhistleActivity.this);
-						bAnsOptRate1.setImageDrawable(res
-								.getDrawable(R.drawable.ic_rating_yay));
-						bAnsOptRate1
-						.setOnClickListener(new View.OnClickListener() {
-							public void onClick(View v) {
-								recordAnswer(1);
-							}
-						});
-
-						ImageButton bAnsOptRate2 = new ImageButton(
-								ViewWhistleActivity.this);
-						bAnsOptRate2.setImageDrawable(res
-								.getDrawable(R.drawable.ic_rating_unsure));
-						bAnsOptRate2
-						.setOnClickListener(new View.OnClickListener() {
-							public void onClick(View v) {
-								recordAnswer(2);
-							}
-						});
-
-						ImageButton bAnsOptRate3 = new ImageButton(
-								ViewWhistleActivity.this);
-						bAnsOptRate3.setImageDrawable(res
-								.getDrawable(R.drawable.ic_rating_meh));
-						bAnsOptRate3
-						.setOnClickListener(new View.OnClickListener() {
-							public void onClick(View v) {
-								recordAnswer(3);
-							}
-						});
-
-						ImageButton bAnsOptRate4 = new ImageButton(
-								ViewWhistleActivity.this);
-						bAnsOptRate4.setImageDrawable(res
-								.getDrawable(R.drawable.ic_rating_ew));
-						bAnsOptRate4
-						.setOnClickListener(new View.OnClickListener() {
-							public void onClick(View v) {
-								recordAnswer(4);
-							}
-						});
-
-						// Setup the row of rate buttons
-						LinearLayout rateRow = new LinearLayout(
-								ViewWhistleActivity.this);
-						rateRow.setGravity(Gravity.CENTER);
-						viewWhistleAnswers.addView(rateRow);
-						TextView love = new TextView(ViewWhistleActivity.this);
-						love.setText("LOVE");
-						TextView hate = new TextView(ViewWhistleActivity.this);
-						hate.setText("HATE");
-						rateRow.addView(love);
-						rateRow.addView(bAnsOptRate1);
-						rateRow.addView(bAnsOptRate2);
-						rateRow.addView(bAnsOptRate3);
-						rateRow.addView(bAnsOptRate4);
-						rateRow.addView(hate);
-					}
-				}
-
-				// If this user answered the question before
-				else {
-					loadResults();
-				}
-			}
-		});
-
-	}
-
-	/**
-	 * Set up the {@link android.app.ActionBar}.
-	 */
-	private void setupActionBar() {
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.view_whistle, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			NavUtils.navigateUpFromSameTask(this);
-			return true;
-		case R.id.report:
-			reportWhistleFragment = new ReportWhistleFragment();
-			reportWhistleFragment.show(getFragmentManager(), "reportWhistle");
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	public static int calculateInSampleSize(BitmapFactory.Options options,
@@ -399,9 +388,6 @@ public class ViewWhistleActivity extends Activity {
 		// Raw height and width of image
 		final int height = options.outHeight;
 		final int width = options.outWidth;
-
-		// Log.i("WHEE", "height ma bob " + height);
-		// Log.i("WHEE", "width ma bob " + width);
 		int inSampleSize = 64;
 
 		if (height > reqHeight || width > reqWidth) {
@@ -439,11 +425,11 @@ public class ViewWhistleActivity extends Activity {
 		return BitmapFactory.decodeByteArray(data, 0, data.length, options);
 	}
 
+	// Method for the inappropriate button in the report dialog
 	public void reportInappropriate(View view) {
 		// ThisUser myUser = new ThisUser(
 		// ParseInstallation.getCurrentInstallation());
 		// Number myUserId = myUser.userId();
-		Number myUserId = 257;
 		ParseObject voteQuesFlag = new ParseObject("VoteQuesFlag");
 		voteQuesFlag.put("flagType", "INA");
 		voteQuesFlag.put("quesId", quesId);
@@ -452,7 +438,11 @@ public class ViewWhistleActivity extends Activity {
 		reportWhistleFragment.dismiss();
 	}
 
+	// Method for the repetitive button in the report dialog
 	public void reportRepetitive(View view) {
+		// ThisUser myUser = new ThisUser(
+		// ParseInstallation.getCurrentInstallation());
+		// Number myUserId = myUser.userId();
 		ThisUser myUser = new ThisUser(
 				ParseInstallation.getCurrentInstallation());
 		Number myUserId = myUser.userId();
@@ -464,25 +454,29 @@ public class ViewWhistleActivity extends Activity {
 		reportWhistleFragment.dismiss();
 	}
 
-	public void recordAnswer(int answer) {
+	// What happens when any one of the answer buttons are pressed
+	public void recordAnswer(int answer, boolean rating) {
 		if (answer == 1) {
 			int hitcount1 = (Integer) voteQues.getNumber("ansOptHitcount1");
 			hitcount1 = hitcount1 + 1;
 			voteQues.put("ansOptHitcount1", (Number) hitcount1);
 			voteQues.put("hitCount", hitCount + 1);
 			voteQues.saveInBackground();
+			recordVoteAnswer(answer, rating);
 		} else if (answer == 2) {
 			int hitcount2 = (Integer) voteQues.getNumber("ansOptHitcount2");
 			hitcount2 = hitcount2 + 1;
 			voteQues.put("ansOptHitcount2", (Number) hitcount2);
 			voteQues.put("hitCount", hitCount + 1);
 			voteQues.saveInBackground();
+			recordVoteAnswer(answer, rating);
 		} else if (answer == 3) {
 			int hitcount3 = (Integer) voteQues.getNumber("ansOptHitcount3");
 			hitcount3 = hitcount3 + 1;
 			voteQues.put("ansOptHitcount3", (Number) hitcount3);
 			voteQues.put("hitCount", hitCount + 1);
 			voteQues.saveInBackground();
+			recordVoteAnswer(answer, rating);
 
 		} else if (answer == 4) {
 			int hitcount4 = (Integer) voteQues.getNumber("ansOptHitcount4");
@@ -490,13 +484,27 @@ public class ViewWhistleActivity extends Activity {
 			voteQues.put("ansOptHitcount4", (Number) hitcount4);
 			voteQues.put("hitCount", hitCount + 1);
 			voteQues.saveInBackground();
+			recordVoteAnswer(answer, rating);
 		}
-		loadResults();
+		setupResults();
 	}
-	
-	public void loadResults() {		
-		
-		// Set up the tabs and the results
+
+	private void recordVoteAnswer(int answer, boolean rating) {
+		ParseObject voteAnswer = new ParseObject("voteAnswer");
+		voteAnswer.put("favorite", false);
+		voteAnswer.put("optSelected", answer);
+		voteAnswer.put("quesId", quesId);
+		voteAnswer.put("skipped", false);
+		voteAnswer.put("userId", myUserId);
+		if (rating == true) {
+			voteAnswer.put("rateVal", answer);
+		} else {
+			voteAnswer.put("rateVal", 0);
+		}
+		voteAnswer.saveInBackground();
+	}
+
+	public void setupResults() {
 		tabHost = (TabHost) findViewById(R.id.activity_view_whistle_tabhost);
 		tabHost.setup();
 
@@ -514,6 +522,110 @@ public class ViewWhistleActivity extends Activity {
 
 		tabHost.addTab(spec1);
 		tabHost.addTab(spec2);
-		tabHost.addTab(spec3);				
+		tabHost.addTab(spec3);
+
+		if (ansType.equals("TXT")) {
+			button1.setEnabled(false);
+			button2.setEnabled(false);
+			button3.setEnabled(false);
+			button4.setEnabled(false);
+		}
+
+		if (ansType.equals("PHOT") || ansType.equals("RATE")) {
+			iButton1.setEnabled(false);
+			iButton2.setEnabled(false);
+			iButton3.setEnabled(false);
+			iButton4.setEnabled(false);
+		}
+	}
+
+	public void sendComment(View view) {
+		EditText editText = (EditText) findViewById(R.id.view_whistle_create_comment);
+		String comment = editText.getText().toString();
+		ParseObject voteComment = new ParseObject("VoteComment");
+		voteComment.put("comment", comment);
+		voteComment.put("quesId", quesId);
+		voteComment.put("userId", myUserId);
+
+		// Keep track of user pointer
+		ParseQuery<ParseObject> qUsers = ParseQuery.getQuery("Users");
+		qUsers.whereEqualTo("userId", myUserId);
+		try {
+			ParseObject user = qUsers.getFirst();
+			voteComment.put("user", user);
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
+
+		// Keep track of the comment id
+		ParseQuery<ParseObject> qVoteComment = ParseQuery
+				.getQuery("VoteComment");
+		qVoteComment.orderByDescending("commentId");
+		Number commentIdCount;
+		try {
+			commentIdCount = qVoteComment.getFirst().getNumber("commentId");
+			commentIdCount = commentIdCount.intValue() + 1;
+			voteComment.put("commentId", commentIdCount);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		voteComment.saveInBackground();
+		editText.setText("");
+		gridAdapter.notifyDataSetChanged();
+		gridView.invalidateViews();
+		setupComments();
+	}
+
+	private void setupComments() {
+		gridView = (GridView) findViewById(R.id.view_whistle_comment);
+		ParseQuery<ParseObject> qVoteComment = ParseQuery
+				.getQuery("VoteComment");
+
+		// Ask for all the comments under that question
+		qVoteComment.whereEqualTo("quesId", quesId);
+		qVoteComment.addDescendingOrder("createdAt");
+		qVoteComment.findInBackground(new FindCallback<ParseObject>() {
+			public void done(List<ParseObject> objects, ParseException e) {
+				if (e == null) {
+
+					ArrayList<String> comments = new ArrayList<String>();
+					ArrayList<String> userFirstName = new ArrayList<String>();
+					ArrayList<String> userLastName = new ArrayList<String>();
+					ArrayList<Bitmap> userImage = new ArrayList<Bitmap>();
+
+					// Retrieve all comments
+					for (int i = 0; i < objects.size(); i++) {
+						comments.add(objects.get(i).getString("comment"));
+						ParseObject user;
+						try {
+							user = objects.get(i).getParseObject("user")
+									.fetchIfNeeded();
+							userFirstName.add(user.getString("firstName"));
+							userLastName.add(user.getString("lastName"));
+							ParseFile imageFile = user
+									.getParseFile("imageFile");
+							try {
+								byte[] dImageFile = imageFile.getData();
+								userImage.add(decodeSampledBitmap(dImageFile,
+										50, 50));
+							} catch (ParseException e1) {
+								e1.printStackTrace();
+							}
+						} catch (ParseException e2) {
+							e2.printStackTrace();
+						}
+					}
+
+					// Create a new adapter for comments
+					gridAdapter = new CommentGridAdapter(
+							ViewWhistleActivity.this, comments, userFirstName,
+							userLastName, userImage);
+
+					// Set the adapter
+					gridView.setAdapter(gridAdapter);
+				} else {
+				}
+			}
+		});
 	}
 }

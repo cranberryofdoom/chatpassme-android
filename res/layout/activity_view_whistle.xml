@@ -26,6 +26,7 @@
             android:id="@+id/view_whistle_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="sendComment"
             android:text="@string/send" />
     </LinearLayout>
 
@@ -82,8 +83,8 @@
         android:id="@+id/view_whistle_answers"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@id/view_whistle_clik_content" >
+        android:layout_below="@id/view_whistle_clik_content"
+        android:orientation="vertical" >
 
         <TabHost
             android:id="@+id/activity_view_whistle_tabhost"
@@ -147,13 +148,13 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/view_whistle_comment_header"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/view_whistle_answers"
         android:layout_centerHorizontal="true" >
 
         <TextView
-            android:id="@+id/textView1"
             android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:layout_weight="1"
@@ -167,5 +168,16 @@
             android:layout_height="wrap_content"
             android:src="@android:drawable/ic_menu_share" />
     </LinearLayout>
+
+    <GridView
+        android:id="@+id/view_whistle_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/view_whistle_send_comment"
+        android:layout_below="@+id/view_whistle_comment_header"
+        android:layout_centerHorizontal="true"
+        android:numColumns="1" >
+
+    </GridView>
 
 </RelativeLayout>

@@ -6,8 +6,10 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 
-public class ReportWhistleFragment extends DialogFragment {
+public class ReportWhistleDialogFragment extends DialogFragment {
+	
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -19,8 +21,8 @@ public class ReportWhistleFragment extends DialogFragment {
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 
 		// Inflate and set the layout for the dialog
-		// Pass null as the parent view because its going in the dialog layout
-		builder.setView(inflater.inflate(R.layout.dialog_report_whistle, null));
+		View view = inflater.inflate(R.layout.dialog_report_whistle, null);
+		builder.setView(view);
 
 		builder.setMessage(R.string.report_whistle).setNegativeButton(
 				R.string.cancel, new DialogInterface.OnClickListener() {
@@ -30,7 +32,7 @@ public class ReportWhistleFragment extends DialogFragment {
 						dismiss();
 					}
 				});
-
+		
 		// Create the AlertDialog object and return it
 		return builder.create();
 	}

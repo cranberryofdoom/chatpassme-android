@@ -11,27 +11,17 @@ public class ChooseProfilePictureDialogFragment extends DialogFragment {
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-		// Use the Builder class for convenient dialog construction
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		
-		// Get the layout inflater
 	    LayoutInflater inflater = getActivity().getLayoutInflater();
-
-	    // Inflate and set the layout for the dialog
-	    // Pass null as the parent view because its going in the dialog layout
 	    builder.setView(inflater.inflate(R.layout.dialog_choose_profile_picture, null));
 		
 		builder.setMessage(R.string.choose_image).setNegativeButton(
 				R.string.cancel, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-
-						// User cancelled the dialog
 						dismiss();
 					}
 				});
 
-		// Create the AlertDialog object and return it
 		return builder.create();
 	}
 }

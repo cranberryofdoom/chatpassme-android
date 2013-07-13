@@ -39,61 +39,65 @@ public final class R {
         public static final int whistle_placeholder=0x7f02000f;
     }
     public static final class id {
-        public static final int action_settings=0x7f080044;
         public static final int activity_view_whistle_tabhost=0x7f080014;
-        public static final int button1=0x7f080036;
-        public static final int choose_image_search=0x7f08001f;
-        public static final int choose_image_take=0x7f08001d;
-        public static final int choose_image_upload=0x7f08001e;
-        public static final int cliks=0x7f08003a;
+        public static final int button1=0x7f080037;
+        public static final int choose_image_search=0x7f080020;
+        public static final int choose_image_take=0x7f08001e;
+        public static final int choose_image_upload=0x7f08001f;
+        public static final int cliks=0x7f08003b;
         public static final int contacts=0x7f080003;
-        public static final int contacts_grid_view=0x7f080023;
+        public static final int contacts_grid_view=0x7f080024;
         public static final int convos=0x7f080005;
         public static final int create=0x7f080004;
-        public static final int editText1=0x7f08002c;
-        public static final int editText2=0x7f080029;
-        public static final int editText3=0x7f08002b;
-        public static final int editText4=0x7f08002a;
         public static final int everyone=0x7f080015;
         public static final int fragment_content=0x7f080000;
         public static final int friends=0x7f080019;
         public static final int home=0x7f080002;
-        public static final int home_grid_view=0x7f080034;
-        public static final int imageButton1=0x7f08002e;
-        public static final int imageButton2=0x7f08002f;
-        public static final int imageButton3=0x7f080030;
-        public static final int imageButton4=0x7f080031;
-        public static final int imageButton5=0x7f080033;
-        public static final int layout_user_image=0x7f080042;
-        public static final int layout_whistle_clik_count=0x7f080043;
-        public static final int layout_whistle_image=0x7f080040;
-        public static final int layout_whistle_question=0x7f080041;
+        public static final int home_grid_view=0x7f080035;
+        public static final int image_answer1=0x7f08002f;
+        public static final int image_answer2=0x7f080030;
+        public static final int image_answer3=0x7f080031;
+        public static final int image_answer4=0x7f080032;
+        public static final int layout_comment_comment=0x7f080043;
+        public static final int layout_comment_name=0x7f080042;
+        public static final int layout_comment_user_image=0x7f080041;
+        public static final int layout_user_image=0x7f080046;
+        public static final int layout_whistle_clik_count=0x7f080047;
+        public static final int layout_whistle_image=0x7f080044;
+        public static final int layout_whistle_question=0x7f080045;
         public static final int nav_bar=0x7f080001;
-        public static final int photo=0x7f08002d;
+        public static final int photo=0x7f08002e;
         public static final int pod_everyone=0x7f080009;
         public static final int pod_friends=0x7f080007;
         public static final int pod_school=0x7f080008;
-        public static final int pods=0x7f08003e;
+        public static final int pods=0x7f08003f;
         public static final int profile=0x7f080006;
-        public static final int profile_clik_count=0x7f080037;
-        public static final int profile_cliks=0x7f08003b;
-        public static final int profile_picture=0x7f080035;
-        public static final int profile_pod_count=0x7f080039;
-        public static final int profile_whistle_count=0x7f080038;
-        public static final int profile_whistles=0x7f08003d;
-        public static final int rating=0x7f080032;
-        public static final int report=0x7f080045;
-        public static final int report_whistle_inappropriate=0x7f080020;
-        public static final int report_whistle_repetitive=0x7f080021;
+        public static final int profile_clik_count=0x7f080038;
+        public static final int profile_cliks=0x7f08003c;
+        public static final int profile_picture=0x7f080036;
+        public static final int profile_pod_count=0x7f08003a;
+        public static final int profile_whistle_count=0x7f080039;
+        public static final int profile_whistles=0x7f08003e;
+        public static final int rating=0x7f080033;
+        public static final int rating_photo=0x7f080034;
+        public static final int report=0x7f080049;
+        public static final int report_whistle_inappropriate=0x7f080021;
+        public static final int report_whistle_repetitive=0x7f080022;
         public static final int school=0x7f080017;
-        public static final int searchView1=0x7f080022;
-        public static final int stats=0x7f08003f;
-        public static final int tabhost=0x7f080027;
-        public static final int text=0x7f080028;
-        public static final int textView1=0x7f08001b;
+        public static final int searchView1=0x7f080023;
+        public static final int select_a_pod=0x7f080048;
+        public static final int stats=0x7f080040;
+        public static final int tabhost=0x7f080028;
+        public static final int text=0x7f080029;
+        public static final int text_answer1=0x7f08002a;
+        public static final int text_answer2=0x7f08002b;
+        public static final int text_answer3=0x7f08002c;
+        public static final int text_answer4=0x7f08002d;
         public static final int view_whistle_answers=0x7f080013;
         public static final int view_whistle_clik_content=0x7f080010;
         public static final int view_whistle_clik_count=0x7f08000f;
+        public static final int view_whistle_comment=0x7f08001d;
+        public static final int view_whistle_comment_header=0x7f08001b;
         public static final int view_whistle_create_comment=0x7f08000b;
         public static final int view_whistle_everyone_response=0x7f080016;
         public static final int view_whistle_friends_response=0x7f08001a;
@@ -105,10 +109,10 @@ public final class R {
         public static final int view_whistle_send_comment=0x7f08000a;
         public static final int view_whistle_share=0x7f08001c;
         public static final int view_whistle_user_image=0x7f08000e;
-        public static final int whistle=0x7f080024;
-        public static final int whistle_photo=0x7f080026;
-        public static final int whistle_text=0x7f080025;
-        public static final int whistles=0x7f08003c;
+        public static final int whistle=0x7f080025;
+        public static final int whistle_image=0x7f080027;
+        public static final int whistle_text=0x7f080026;
+        public static final int whistles=0x7f08003d;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -122,11 +126,13 @@ public final class R {
         public static final int fragment_create=0x7f030008;
         public static final int fragment_home=0x7f030009;
         public static final int fragment_profile=0x7f03000a;
-        public static final int layout_whistle=0x7f03000b;
+        public static final int layout_comment=0x7f03000b;
+        public static final int layout_whistle=0x7f03000c;
     }
     public static final class menu {
-        public static final int select_apod=0x7f070000;
-        public static final int view_whistle=0x7f070001;
+        public static final int activity_main=0x7f070000;
+        public static final int select_a_pod=0x7f070001;
+        public static final int view_whistle=0x7f070002;
     }
     public static final class string {
         public static final int action_settings=0x7f050003;
@@ -149,6 +155,8 @@ public final class R {
         public static final int home=0x7f050004;
         public static final int inappropriate=0x7f05001f;
         public static final int menu_settings=0x7f050001;
+        public static final int minimum_answer_warning=0x7f050022;
+        public static final int ok=0x7f050024;
         public static final int profile=0x7f050008;
         public static final int repetitive=0x7f050020;
         public static final int report=0x7f05001e;
@@ -163,6 +171,7 @@ public final class R {
         public static final int title_activity_view_whistle=0x7f050017;
         public static final int upload=0x7f050015;
         public static final int whistle_photo=0x7f050009;
+        public static final int whistle_text_warning=0x7f050023;
     }
     public static final class style {
         /** 

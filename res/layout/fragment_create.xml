@@ -18,18 +18,16 @@
             android:layout_weight="2"
             android:ems="10"
             android:hint="@string/create_question_hint"
-            android:inputType="textMultiLine" >
-
-            <requestFocus />
+            android:inputType="textMultiLine"
+            android:maxLength="50" >
         </EditText>
 
         <ImageButton
-            android:id="@+id/whistle_photo"
+            android:id="@+id/whistle_image"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:contentDescription="@string/whistle_photo"
-            android:onClick="chooseImage"
             android:src="@drawable/ic_dialog_take" />
     </LinearLayout>
 
@@ -61,36 +59,40 @@
                     android:orientation="vertical" >
 
                     <EditText
-                        android:id="@+id/editText2"
+                        android:id="@+id/text_answer1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:ems="10"
-                        android:hint="@string/create_answer_hint_1" />
+                        android:hint="@string/create_answer_hint_1"
+                        android:maxLength="25" />
 
                     <EditText
-                        android:id="@+id/editText4"
+                        android:id="@+id/text_answer2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:ems="10"
-                        android:hint="@string/create_answer_hint_2" />
+                        android:hint="@string/create_answer_hint_2"
+                        android:maxLength="25" />
 
                     <EditText
-                        android:id="@+id/editText3"
+                        android:id="@+id/text_answer3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:ems="10"
-                        android:hint="@string/create_answer_hint_3" />
+                        android:hint="@string/create_answer_hint_3"
+                        android:maxLength="25" />
 
                     <EditText
-                        android:id="@+id/editText1"
+                        android:id="@+id/text_answer4"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:ems="10"
-                        android:hint="@string/create_answer_hint_4" />
+                        android:hint="@string/create_answer_hint_4"
+                        android:maxLength="25" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -104,19 +106,17 @@
                         android:layout_height="wrap_content" >
 
                         <ImageButton
-                            android:id="@+id/imageButton1"
+                            android:id="@+id/image_answer1"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="chooseImage"
                             android:src="@drawable/ic_dialog_take" />
 
                         <ImageButton
-                            android:id="@+id/imageButton2"
+                            android:id="@+id/image_answer2"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="chooseImage"
                             android:src="@drawable/ic_dialog_take" />
                     </LinearLayout>
 
@@ -125,19 +125,17 @@
                         android:layout_height="wrap_content" >
 
                         <ImageButton
-                            android:id="@+id/imageButton3"
+                            android:id="@+id/image_answer3"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="chooseImage"
                             android:src="@drawable/ic_dialog_take" />
 
                         <ImageButton
-                            android:id="@+id/imageButton4"
+                            android:id="@+id/image_answer4"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:onClick="chooseImage"
                             android:src="@drawable/ic_dialog_take" />
                     </LinearLayout>
                 </LinearLayout>
@@ -155,10 +153,9 @@
                         android:text="@string/choose_image" />
 
                     <ImageButton
-                        android:id="@+id/imageButton5"
+                        android:id="@+id/rating_photo"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:onClick="chooseImage"
                         android:src="@drawable/ic_dialog_take" />
                 </LinearLayout>
             </FrameLayout>

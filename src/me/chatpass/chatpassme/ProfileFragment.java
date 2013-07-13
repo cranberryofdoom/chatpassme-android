@@ -3,7 +3,6 @@ package me.chatpass.chatpassme;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -90,30 +89,7 @@ public class ProfileFragment extends Fragment {
 		// }
 		// }
 		// });
-
-		tabHost = (TabHost) view.findViewById(R.id.tabhost);
-		tabHost.setup();
-
-		TabSpec spec1 = tabHost.newTabSpec("Cliks");
-		spec1.setContent(R.id.cliks);
-		spec1.setIndicator("Cliks");
-
-		TabSpec spec2 = tabHost.newTabSpec("Whistles");
-		spec2.setIndicator("Whistles");
-		spec2.setContent(R.id.whistles);
-
-		TabSpec spec3 = tabHost.newTabSpec("Pods");
-		spec3.setContent(R.id.pods);
-		spec3.setIndicator("Pods");
-
-		TabSpec spec4 = tabHost.newTabSpec("Stats");
-		spec4.setContent(R.id.stats);
-		spec4.setIndicator("Stats");
-
-		tabHost.addTab(spec1);
-		tabHost.addTab(spec2);
-		tabHost.addTab(spec3);
-		tabHost.addTab(spec4);
+		setupTabs(view);
 
 		getWhistleCount(view);
 
@@ -331,5 +307,31 @@ public class ProfileFragment extends Fragment {
 				}
 			}
 		});
+	}
+	
+	private void setupTabs(View view) {
+		tabHost = (TabHost) view.findViewById(R.id.tabhost);
+		tabHost.setup();
+
+		TabSpec spec1 = tabHost.newTabSpec("Cliks");
+		spec1.setContent(R.id.cliks);
+		spec1.setIndicator("Cliks");
+
+		TabSpec spec2 = tabHost.newTabSpec("Whistles");
+		spec2.setIndicator("Whistles");
+		spec2.setContent(R.id.whistles);
+
+		TabSpec spec3 = tabHost.newTabSpec("Pods");
+		spec3.setContent(R.id.pods);
+		spec3.setIndicator("Pods");
+
+		TabSpec spec4 = tabHost.newTabSpec("Stats");
+		spec4.setContent(R.id.stats);
+		spec4.setIndicator("Stats");
+
+		tabHost.addTab(spec1);
+		tabHost.addTab(spec2);
+		tabHost.addTab(spec3);
+		tabHost.addTab(spec4);
 	}
 }

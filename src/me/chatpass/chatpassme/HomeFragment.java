@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,6 @@ import com.parse.ParseQuery;
 public class HomeFragment extends Fragment {
 
 	private GridView gridView;
-	private WhistleGridAdapter gridAdapter;
 	private ArrayList<String> objectId = new ArrayList<String>();
 	private ArrayList<String> quesTxt = new ArrayList<String>();
 	private ArrayList<Integer> hitCount = new ArrayList<Integer>();
@@ -47,7 +47,7 @@ public class HomeFragment extends Fragment {
 
 		// Identify which grid view we're going to load data into
 		gridView = (GridView) view.findViewById(R.id.home_grid_view);
-		
+
 		return view;
 	}
 
@@ -56,45 +56,42 @@ public class HomeFragment extends Fragment {
 
 		// Get the activity that this fragment is called from
 		final Activity activity = getActivity();
-		
+
+		// Get the placeholder image
 		Resources res = getResources();
 		Drawable drawable = res.getDrawable(R.drawable.whistle_placeholder);
-		final Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+		final Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 		final byte[] bitMapData = stream.toByteArray();
-		
 
 		// If there is an activity linked to this fragment
 		if (activity != null) {
 
-			// Create a ParseObject query and ask for the VoteQues class
+			// Ask for the VoteQues class
 			ParseQuery<ParseObject> query = ParseQuery.getQuery("VoteQues");
 
+			// Get only 5 objects
 			query.setLimit(5);
+
+			// Order these objects by when they were created
 			query.addAscendingOrder("createdAt");
-			// Tell Parse to find it
 			query.findInBackground(new FindCallback<ParseObject>() {
-
-				// When Parse has found the objects it put them in a list
 				public void done(List<ParseObject> objects, ParseException e) {
-
-					// If there is no exception
 					if (e == null) {
 
 						// Retrieve data from Parse and push all data into
 						// respective arrays
 						for (int i = 0; i < objects.size(); i++) {
-							// Log.e("NUMBER", "" + i);
-							
-							//Log.i("WTF", objects.get(i).getObjectId());
+							Log.e("NUMBER", "" + i);
 
+							// Get object id
 							objectId.add(i, objects.get(i).getObjectId());
 
-							// Get whistle question string from ParseObject
+							// Get whistle question
 							quesTxt.add(i, objects.get(i).getString("quesTxt"));
 
-							// Get number of cliks from ParseObject
+							// Get number of cliks
 							hitCount.add(i, objects.get(i).getInt("hitCount"));
 
 							// Get question image
@@ -103,8 +100,6 @@ public class HomeFragment extends Fragment {
 
 							if (pQuesImg != null) {
 								try {
-									// Log.w("WHISTLE IMAGE",
-									// "MY SPOON IS TOO BIG");
 									byte[] data = pQuesImg.getData();
 									dataQuesImg.add(data);
 									quesImg.add(decodeSampledBitmap(data, 200,
@@ -118,21 +113,15 @@ public class HomeFragment extends Fragment {
 								quesImg.add(bitmap);
 							}
 
-							// Get the userId from the ParseObject
+							// Get user image
 							Number userId = objects.get(i).getNumber("userId");
-							
-
-							// Ask for the Users class
 							ParseQuery<ParseObject> user = ParseQuery
 									.getQuery("Users");
-
-							// Get the that specific userId
 							user.whereEqualTo("userId", userId);
 							try {
 								ParseObject pUser = user.getFirst();
 								ParseFile pUserImg = pUser
 										.getParseFile("imageFile");
-								// Log.w("USER IMAGE", "I AM A BANANA");
 								byte[] data = pUserImg.getData();
 								dataUserImg.add(data);
 								userImg.add(decodeSampledBitmap(data, 50, 50));
@@ -140,18 +129,17 @@ public class HomeFragment extends Fragment {
 							}
 						}
 
-						// Create a new adapter
-						gridAdapter = new WhistleGridAdapter(activity, quesTxt,
-								hitCount, quesImg, userImg);
-
-						// Set the adapter
+						// Create a new grid adapter and set it
+						WhistleGridAdapter gridAdapter = new WhistleGridAdapter(
+								activity, quesTxt, hitCount, quesImg, userImg);
 						gridView.setAdapter(gridAdapter);
 
-						// Show the whistle when one of the grid items are
-						// clicked on
+						// Set grid click listener
 						gridView.setOnItemClickListener(new OnItemClickListener() {
 							public void onItemClick(AdapterView<?> parent,
 									View v, int position, long id) {
+								
+								// Push all necessary information over to next activity
 								Intent intent = new Intent(activity,
 										ViewWhistleActivity.class);
 								intent.putExtra("iObjectId",
@@ -179,8 +167,6 @@ public class HomeFragment extends Fragment {
 		final int height = options.outHeight;
 		final int width = options.outWidth;
 
-		// Log.i("WHEE", "height ma bob " + height);
-		// Log.i("WHEE", "width ma bob " + width);
 		int inSampleSize = 64;
 
 		if (height > reqHeight || width > reqWidth) {
@@ -195,7 +181,6 @@ public class HomeFragment extends Fragment {
 			// guarantee a final image with both dimensions larger than or equal
 			// to the requested height and width.
 			inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
-			// Log.i("WHEE", "sample size ma bob " + inSampleSize);
 		}
 
 		return inSampleSize;

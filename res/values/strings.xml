@@ -35,5 +35,8 @@
     <string name="inappropriate">Inappropriate</string>
     <string name="repetitive">Repetitive</string>
     <string name="report_whistle">Report This Whistle</string>
+    <string name="minimum_answer_warning">There must be at least 2 clicks</string>
+    <string name="whistle_text_warning">You forgot write a question!</string>
+    <string name="ok">Ok</string>
 
 </resources>

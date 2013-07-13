@@ -3,12 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity" >
-    
-	<FrameLayout
-	    android:id="@+id/fragment_content"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
-	    android:layout_above="@+id/nav_bar" />
+
+    <FrameLayout
+        android:id="@+id/fragment_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/nav_bar" >
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/nav_bar"
@@ -18,48 +19,48 @@
 
         <ImageButton
             android:id="@+id/home"
-            android:contentDescription="@string/home"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_tab_home"
-            android:onClick="loadHomeFragment" />
+            android:contentDescription="@string/home"
+            android:onClick="loadHomeFragment"
+            android:src="@drawable/ic_tab_home" />
 
         <ImageButton
             android:id="@+id/contacts"
-            android:contentDescription="@string/contacts"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_tab_contacts"
-            android:onClick="loadContactsFragment" />
+            android:contentDescription="@string/contacts"
+            android:onClick="loadContactsFragment"
+            android:src="@drawable/ic_tab_contacts" />
 
         <ImageButton
             android:id="@+id/create"
-            android:contentDescription="@string/create"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_tab_create"
-            android:onClick="loadCreateFragment" />
+            android:contentDescription="@string/create"
+            android:onClick="loadCreateFragment"
+            android:src="@drawable/ic_tab_create" />
 
         <ImageButton
             android:id="@+id/convos"
-            android:contentDescription="@string/convos"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_tab_convos"
-            android:onClick="loadConvosFragment" />
+            android:contentDescription="@string/convos"
+            android:onClick="loadConvosFragment"
+            android:src="@drawable/ic_tab_convos" />
 
         <ImageButton
             android:id="@+id/profile"
-            android:contentDescription="@string/profile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_tab_profile"
-            android:onClick="loadProfileFragment"  />
+            android:contentDescription="@string/profile"
+            android:onClick="loadProfileFragment"
+            android:src="@drawable/ic_tab_profile" />
     </LinearLayout>
 
 </RelativeLayout>

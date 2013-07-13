@@ -9,6 +9,7 @@ public class ThisUser {
 
 	private Number myUserId;
 	private String phoneNumber;
+	private ParseObject myUserParseObject;
 
 	// Constructor
 	public ThisUser(final ParseInstallation id) {
@@ -24,6 +25,7 @@ public class ThisUser {
 
 		// Get this user's id
 		try {
+			myUserParseObject = qUsers.getFirst();
 			myUserId = qUsers.getFirst().getNumber("userId");
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -32,6 +34,10 @@ public class ThisUser {
 	
 	public Number userId() {
 		return myUserId;
+	}
+	
+	public ParseObject userParseObject() {
+		return myUserParseObject;
 	}
 
 }

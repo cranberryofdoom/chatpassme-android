@@ -2,7 +2,6 @@ package me.chatpass.chatpassme;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -19,7 +18,6 @@ public class WhistleGridAdapter extends BaseAdapter {
 	private ArrayList<Bitmap> mQuesImg;
 	private ArrayList<Bitmap> mUserImg;
 
-	// Constructor
 	public WhistleGridAdapter(Context c, ArrayList<String> quesTxt,
 			ArrayList<Integer> hitCount, ArrayList<Bitmap> quesImg,
 			ArrayList<Bitmap> userImg) {
@@ -27,7 +25,8 @@ public class WhistleGridAdapter extends BaseAdapter {
 		mQuesTxt = quesTxt;
 		mHitCount = hitCount;
 		mQuesImg = quesImg;
-		mUserImg = userImg;	}
+		mUserImg = userImg;
+	}
 
 	@Override
 	public int getCount() {
@@ -52,11 +51,7 @@ public class WhistleGridAdapter extends BaseAdapter {
 		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) mContext
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-			// Create a new View
 			gridView = new View(mContext);
-
-			// Get layout from layout_whistle.xml
 			gridView = inflater.inflate(R.layout.layout_whistle, null);
 
 		} else {
@@ -78,7 +73,7 @@ public class WhistleGridAdapter extends BaseAdapter {
 				.findViewById(R.id.layout_whistle_image);
 		layoutWhistleImage.setImageBitmap(mQuesImg.get(position));
 
-		// Push all the whistle images into the layout_whistle_image
+		// Push all the user images into the layout_whistle_user_image
 		ImageView layoutUserImage = (ImageView) gridView
 				.findViewById(R.id.layout_user_image);
 		layoutUserImage.setImageBitmap(mUserImg.get(position));

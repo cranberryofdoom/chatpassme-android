@@ -14,11 +14,13 @@ import com.parse.ParseAnalytics;
 import com.parse.ParseInstallation;
 
 public class MainActivity extends Activity {
+	
+	private DialogFragment profilePictureDialog;
 		
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
 		// Initialize Parse
 		Parse.initialize(this, "N1j4C4EpAYnq44vlpbZnwK0BIdBGAAgPDnyQMZsu",
 				"WdjH2YPmpF14Bo3N0uTpGasp7upf7jn6NIpFDyqW");
@@ -27,7 +29,7 @@ public class MainActivity extends Activity {
 		// Get Installation Id
 		final ParseInstallation id = ParseInstallation.getCurrentInstallation();
 		
-		// Set the view to activity_main.xml
+		// Set the view
 		setContentView(R.layout.activity_main);
 
 		// Immediately load the home fragment
@@ -36,6 +38,23 @@ public class MainActivity extends Activity {
 		t.add(R.id.fragment_content, createF);
 		t.commit();
 	}
+	
+	// Set the menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.activity_main, menu);
+        return true;
+    }
+    
+    // Set the menu click listeners
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
 
 	// Load the home fragment if the home button is pressed
 	public void loadHomeFragment(View view) {
@@ -55,14 +74,13 @@ public class MainActivity extends Activity {
 
 	// Load the create fragment if the create button is pressed
 	public void loadCreateFragment(View view) {
-		
 		FragmentTransaction t = getFragmentManager().beginTransaction();
 		CreateFragment createF = new CreateFragment();
 		t.replace(R.id.fragment_content, createF);
 		t.commit();	
 	}
 
-	// load the convos fragment if the convos button is pressed
+	// Load the convos fragment if the convos button is pressed
 	public void loadConvosFragment(View view) {
 		FragmentTransaction t = getFragmentManager().beginTransaction();
 		ConvosFragment convosF = new ConvosFragment();
@@ -70,30 +88,11 @@ public class MainActivity extends Activity {
 		t.commit();
 	}
 
-	// load the profile fragment if the profile button is pressed
+	// Load the profile fragment if the profile button is pressed
 	public void loadProfileFragment(View view) {
 		FragmentTransaction t = getFragmentManager().beginTransaction();
 		ProfileFragment profileF = new ProfileFragment();
 		t.replace(R.id.fragment_content, profileF);
 		t.commit();
-	}
-	
-	// call the choose image dialog fragment if choose image buttons are pressed
-	public void chooseImage(View view){
-		DialogFragment newFragment = new ChooseImageDialogFragment();
-	    newFragment.show(getFragmentManager(), "createImage");
-	}
-	
-	// call the choose profile picture dialog fragment if choose image buttons are pressed
-	public void chooseProfilePicture(View view){
-		DialogFragment newFragment = new ChooseProfilePictureDialogFragment();
-	    newFragment.show(getFragmentManager(), "createProfilePicture");
-	}
-	
-	// go to select a pod if done making question
-	public void selectAPod(MenuItem item) {
-		Intent intent = new Intent(this,
-				SelectAPodActivity.class);
-		startActivity(intent);
 	}
 }
