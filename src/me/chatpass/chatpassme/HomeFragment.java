@@ -67,17 +67,36 @@ public class HomeFragment extends Fragment {
 		bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 		final byte[] bitMapData = stream.toByteArray();
 
-		// If there is an activity linked to this fragment
 		if (activity != null) {
+			// Get all questions that are directed at everyone
+			ParseQuery<ParseObject> qEveryone = ParseQuery.getQuery("VoteQues");
+			qEveryone.whereEqualTo("target", "EVRY");
+			
+			// Get user's school Id
+			ParseQuery<ParseObject> qUserSchool = ParseQuery.getQuery("UserSchool");
+			Number userId = 257;
+			Number schoolId = 0;
+			qUserSchool.whereEqualTo("userId", userId);
+			try {
+				schoolId = qUserSchool.getFirst().getNumber("schoolId");
+			} catch (ParseException e1) {
+				e1.printStackTrace();
+			}
+			
+			// Get all questions that are targeted at the user's school
+			ParseQuery<ParseObject> qSchool = ParseQuery.getQuery("VoteQues");
+			qSchool.whereEqualTo("target", "SCHL");
+			qSchool.whereEqualTo("schlVal", schoolId);
+			
+			List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
+			queries.add(qEveryone);
+			queries.add(qSchool);
+			
+			ParseQuery<ParseObject> query = ParseQuery.or(queries);
+			query.addDescendingOrder("createdAt");
 
-			// Ask for the VoteQues class
-			ParseQuery<ParseObject> query = ParseQuery.getQuery("VoteQues");
-
-			// Get only 5 objects
-			query.setLimit(5);
-
-			// Order these objects by when they were created
-			query.addAscendingOrder("createdAt");
+			// query.setLimit(5);
+			
 			query.findInBackground(new FindCallback<ParseObject>() {
 				public void done(List<ParseObject> objects, ParseException e) {
 					if (e == null) {

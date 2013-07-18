@@ -39,7 +39,7 @@
             android:id="@+id/view_whistle_user_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="view " />
+            android:onClick="viewOtherProfile" />
 
         <ImageView
             android:layout_width="wrap_content"

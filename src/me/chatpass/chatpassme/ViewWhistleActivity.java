@@ -54,12 +54,11 @@ public class ViewWhistleActivity extends Activity {
 	private byte[] quesImg;
 	private byte[] userImg;
 	private String ansType;
+	private int ansCount;
 	private ParseObject voteQues;
 
-	private ImageButton iButton1;
-	private ImageButton iButton2;
-	private ImageButton iButton3;
-	private ImageButton iButton4;
+	private ImageButton[] iButton = new ImageButton[4];
+	private Button[] button = new Button[4];
 	private Button button1;
 	private Button button2;
 	private Button button3;
@@ -208,13 +207,14 @@ public class ViewWhistleActivity extends Activity {
 		rateWhistle = inflater.inflate(R.layout.layout_rate_whistle,
 				viewWhistleAnswers, false);
 		viewWhistleAnswers.addView(rateWhistle);
-		
+
 		// Get the rate question image
 		try {
 			if (voteQues.getParseFile("rateOptImg") != null) {
 				ParseFile rateOptImg = voteQues.getParseFile("rateOptImg");
 				byte[] dRateOptImg = rateOptImg.getData();
-				ImageView vRateOptImg = (ImageView) rateWhistle.findViewById(R.id.rate_image);
+				ImageView vRateOptImg = (ImageView) rateWhistle
+						.findViewById(R.id.rate_image);
 				vRateOptImg.setImageBitmap(decode.decodeSampledBitmap(
 						dRateOptImg, 100, 200));
 			}
@@ -222,34 +222,16 @@ public class ViewWhistleActivity extends Activity {
 			e1.printStackTrace();
 		}
 
-		// Setup all the buttons
-		iButton1 = (ImageButton) rateWhistle.findViewById(R.id.button1);
-		iButton1.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				recordAnswer(1, true);
-			}
-		});
-
-		iButton2 = (ImageButton) rateWhistle.findViewById(R.id.button2);
-		iButton2.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				recordAnswer(2, true);
-			}
-		});
-
-		iButton3 = (ImageButton) rateWhistle.findViewById(R.id.button3);
-		iButton3.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				recordAnswer(3, true);
-			}
-		});
-
-		iButton4 = (ImageButton) rateWhistle.findViewById(R.id.button4);
-		iButton4.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				recordAnswer(4, true);
-			}
-		});
+		for (int i = 0; i < iButton.length; i++) {
+			final int count = i + 1;
+			iButton[i] = (ImageButton) rateWhistle.findViewById(R.id.button1
+					+ i);
+			iButton[i].setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					recordAnswer(count + 1, true);
+				}
+			});
+		}
 	}
 
 	// Set the buttons for the photo questions
@@ -262,54 +244,27 @@ public class ViewWhistleActivity extends Activity {
 
 		// Set all the buttons and the corresponding images
 		try {
-			ParseFile ansOptImg1 = voteQues.getParseFile("ansOptImg1");
-			byte[] dAnsOptImg1 = ansOptImg1.getData();
-			iButton1 = (ImageButton) photoWhistle.findViewById(R.id.button1);
-			iButton1.setImageBitmap(decode.decodeSampledBitmap(dAnsOptImg1, 50,
-					50));
-			iButton1.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View v) {
-					recordAnswer(1, false);
+			ansCount = 0;
+			for (int i = 1; i <= 4; i++) {
+				if (voteQues.getParseFile("ansOptImg" + i) != null) {
+					ansCount++;
 				}
-			});
-
-			ParseFile ansOptImg2 = voteQues.getParseFile("ansOptImg2");
-			byte[] dAnsOptImg2 = ansOptImg2.getData();
-			iButton2 = (ImageButton) photoWhistle.findViewById(R.id.button2);
-			iButton2.setImageBitmap(decode.decodeSampledBitmap(dAnsOptImg2, 50,
-					50));
-			iButton2.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View v) {
-					recordAnswer(2, false);
-				}
-			});
-
-			if (voteQues.getParseFile("ansOptImg3") != null) {
-				ParseFile ansOptImg3 = voteQues.getParseFile("ansOptImg3");
-				byte[] dAnsOptImg3 = ansOptImg3.getData();
-				iButton3 = (ImageButton) photoWhistle
-						.findViewById(R.id.button3);
-				iButton3.setImageBitmap(decode.decodeSampledBitmap(dAnsOptImg3,
-						50, 50));
-				iButton3.setOnClickListener(new View.OnClickListener() {
+			}
+			for (int i = 0; i < ansCount; i++) {
+				final int position = i + 1;
+				ParseFile ansOptImg = voteQues.getParseFile("ansOptImg"
+						+ position);
+				byte[] dAnsOptImg = ansOptImg.getData();
+				iButton[i] = (ImageButton) photoWhistle
+						.findViewById(R.id.button1 + i);
+				iButton[i].setImageBitmap(decode.decodeSampledBitmap(
+						dAnsOptImg, 50, 50));
+				iButton[i].setOnClickListener(new View.OnClickListener() {
 					public void onClick(View v) {
-						recordAnswer(3, false);
+						recordAnswer(position, false);
 					}
 				});
 
-				if (voteQues.getParseFile("ansOptImg4") != null) {
-					ParseFile ansOptImg4 = voteQues.getParseFile("ansOptImg4");
-					byte[] dAnsOptImg4 = ansOptImg4.getData();
-					iButton4 = (ImageButton) photoWhistle
-							.findViewById(R.id.button4);
-					iButton4.setImageBitmap(decode.decodeSampledBitmap(
-							dAnsOptImg4, 50, 50));
-					iButton4.setOnClickListener(new View.OnClickListener() {
-						public void onClick(View v) {
-							recordAnswer(4, false);
-						}
-					});
-				}
 			}
 		} catch (ParseException e1) {
 			e1.printStackTrace();
@@ -324,45 +279,23 @@ public class ViewWhistleActivity extends Activity {
 				viewWhistleAnswers, false);
 		viewWhistleAnswers.addView(textWhistle);
 
-		// Set all the buttons
-		String ansOptTxt1 = voteQues.getString("ansOptTxt1");
-		button1 = (Button) textWhistle.findViewById(R.id.button1);
-		button1.setText(ansOptTxt1);
-		button1.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				recordAnswer(1, false);
+		ansCount = 0;
+		for (int i = 1; i <= 4; i++) {
+			if (voteQues.getParseFile("ansOptTxt" + i) != null) {
+				ansCount++;
 			}
-		});
-
-		String ansOptTxt2 = voteQues.getString("ansOptTxt2");
-		button2 = (Button) textWhistle.findViewById(R.id.button2);
-		button2.setText(ansOptTxt2);
-		button2.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				recordAnswer(2, false);
-			}
-		});
-
-		if (!voteQues.getString("ansOptTxt3").equals("")) {
-			String ansOptTxt3 = voteQues.getString("ansOptTxt3");
-			button3 = (Button) textWhistle.findViewById(R.id.button3);
-			button3.setText(ansOptTxt3);
-			button3.setOnClickListener(new View.OnClickListener() {
+		}
+		
+		for (int i = 0; i < ansCount; i++) {
+			final int position = i + 1;
+			String ansOptTxt = voteQues.getString("ansOptTxt" + position);
+			button[i] = (Button) textWhistle.findViewById(R.id.button1 + i);
+			button[i].setText(ansOptTxt);
+			button[i].setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
-					recordAnswer(3, false);
+					recordAnswer(position, false);
 				}
 			});
-
-			if (!voteQues.getString("ansOptTxt4").equals("")) {
-				String ansOptTxt4 = voteQues.getString("ansOptTxt4");
-				button4 = (Button) textWhistle.findViewById(R.id.button4);
-				button4.setText(ansOptTxt4);
-				button4.setOnClickListener(new View.OnClickListener() {
-					public void onClick(View v) {
-						recordAnswer(4, false);
-					}
-				});
-			}
 		}
 	}
 
@@ -442,50 +375,24 @@ public class ViewWhistleActivity extends Activity {
 		tabHost.addTab(spec2);
 
 		if (ansType.equals("TXT")) {
-			button1.setEnabled(false);
-			addResults(button1, 1);
-
-			button2.setEnabled(false);
-			addResults(button2, 2);
-
-			if (!voteQues.getString("ansOptTxt3").equals("")) {
-				button3.setEnabled(false);
-				addResults(button3, 3);
-
-				if (!voteQues.getString("ansOptTxt4").equals("")) {
-					button4.setEnabled(false);
-					addResults(button4, 4);
-				}
+			for (int i = 0; i < ansCount; i++) {
+				button[i].setEnabled(false);
+				addResults(button[i], i + 1);
 			}
 		}
 
 		else if (ansType.equals("PHOT")) {
-			iButton1.setEnabled(false);
-			addImageResults(iButton1, 1, "PHTO");
-
-			iButton2.setEnabled(false);
-			addImageResults(iButton2, 2, "PHTO");
-
-			if (voteQues.getParseFile("ansOptImg3").isDataAvailable()) {
-				iButton3.setEnabled(false);
-				addImageResults(iButton3, 3, "PHTO");
-
-				if (voteQues.getParseFile("ansOptImg4").isDataAvailable()) {
-					iButton4.setEnabled(false);
-					addImageResults(iButton4, 4, "PHTO");
-				}
+			for (int i = 0; i < ansCount; i++) {
+				iButton[i].setEnabled(false);
+				addImageResults(iButton[i], i + 1, "PHTO");
 			}
 		}
 
 		else if (ansType.equals("RATE")) {
-			iButton1.setEnabled(false);
-			iButton2.setEnabled(false);
-			iButton3.setEnabled(false);
-			iButton4.setEnabled(false);
-			addImageResults(iButton1, 1, "RATE");
-			addImageResults(iButton2, 2, "RATE");
-			addImageResults(iButton3, 3, "RATE");
-			addImageResults(iButton4, 4, "RATE");
+			for (int i = 0; i < iButton.length; i++) {
+				iButton[i].setEnabled(false);
+				addImageResults(iButton[i], i + 1, "RATE");
+			}
 		}
 	}
 
@@ -495,8 +402,9 @@ public class ViewWhistleActivity extends Activity {
 		TextView results = new TextView(ViewWhistleActivity.this);
 		results.setText("" + result.intValue() + "%");
 		results.setTextSize(20);
-		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) button
-				.getLayoutParams();
+		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)button.getLayoutParams();
+		params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		params.addRule(RelativeLayout.ALIGN_BOTTOM, button.getId());
 		results.setPadding(25, 0, 0, 0);
 		((ViewGroup) textWhistle).addView(results, params);
 	}
@@ -507,15 +415,15 @@ public class ViewWhistleActivity extends Activity {
 		TextView results = new TextView(ViewWhistleActivity.this);
 		results.setText("" + result.intValue() + "%");
 		results.setTextSize(20);
-		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) button
-				.getLayoutParams();
 		if (whistleType.equals("PHTO")) {
+			RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) button
+					.getLayoutParams();
 			results.setPadding(100, 0, 0, 0);
-			((ViewGroup) photoWhistle).addView(results,params);
-		}
-		else {
-			results.setPaddingRelative(100, 100, 0, 0);
-			((ViewGroup) rateWhistle).addView(results,params);
+			((ViewGroup) photoWhistle).addView(results, params);
+		} else {
+			RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) button
+					.getLayoutParams();
+			((ViewGroup) rateWhistle).addView(results, params);
 		}
 	}
 
@@ -584,16 +492,11 @@ public class ViewWhistleActivity extends Activity {
 							userLastName.add(user.getString("lastName"));
 							ParseFile imageFile = user
 									.getParseFile("imageFile");
-
-							try {
-								byte[] dImageFile = imageFile.getData();
-								userImage.add(decode.decodeSampledBitmap(
-										dImageFile, 50, 50));
-							} catch (ParseException e1) {
-								e1.printStackTrace();
-							}
-						} catch (ParseException e2) {
-							e2.printStackTrace();
+							byte[] dImageFile = imageFile.getData();
+							userImage.add(decode.decodeSampledBitmap(
+									dImageFile, 50, 50));
+						} catch (ParseException e1) {
+							e1.printStackTrace();
 						}
 					}
 
@@ -604,7 +507,6 @@ public class ViewWhistleActivity extends Activity {
 
 					// Set the adapter
 					gridView.setAdapter(gridAdapter);
-				} else {
 				}
 			}
 		});
