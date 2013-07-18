@@ -3,7 +3,7 @@
     
      <item
         android:id="@+id/invite_contacts"
-        android:orderInCategory="100"
+        android:showAsAction="always"
         android:title="@string/invite_contacts"/>
 
 </menu>

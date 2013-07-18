@@ -44,10 +44,12 @@ public class ContactsFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
+		
 		View view = inflater.inflate(R.layout.fragment_contacts, container,
 				false);
 
+		setHasOptionsMenu(true);
+		
 		gridView = (GridView) view.findViewById(R.id.contacts_grid_view);
 
 		// Inflate the layout for this fragment

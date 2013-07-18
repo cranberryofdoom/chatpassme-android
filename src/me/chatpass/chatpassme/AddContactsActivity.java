@@ -19,6 +19,7 @@ public class AddContactsActivity extends Activity {
 	private ListView listView;
 	private ArrayList<String> phoneNumberArray = new ArrayList<String>();
 	private ArrayList<String> fullNameArray = new ArrayList<String>();
+	private String messageString;
 
 
 	@Override
@@ -29,6 +30,8 @@ public class AddContactsActivity extends Activity {
 		listView = (ListView) findViewById(R.id.add_contacts_list_view);
 
 		setupActionBar();
+		
+		messageString = "DOWNLOAD CHATPASSME TODAY. YOU IMBCILE.";
 		
 		Cursor phones = getContentResolver().query(
 				ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null,
@@ -59,11 +62,7 @@ public class AddContactsActivity extends Activity {
 		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 	}
 
-	/**
-	 * Set up the {@link android.app.ActionBar}.
-	 */
 	private void setupActionBar() {
-
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 	}
@@ -88,13 +87,13 @@ public class AddContactsActivity extends Activity {
 				if (positions.get(i))
 					smsManager.sendTextMessage(
 							phoneNumberArray.get(positions.indexOfKey(i)),
-							null, null, null, null);
+							null, messageString, null, null);
 			}
 			Toast.makeText(getApplicationContext(), "Invitation Sent!",
 					Toast.LENGTH_LONG).show();
 			return true;
 		}
-			
+
 		return super.onOptionsItemSelected(item);
 	}
 
