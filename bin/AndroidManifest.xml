@@ -9,10 +9,12 @@
         android:targetSdkVersion="17" />
 
     <uses-feature android:name="android.hardware.camera" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <application
         android:allowBackup="true"
@@ -43,6 +45,30 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="me.chatpass.chatpassme.ViewWhistleActivity" />
+        </activity>
+        <activity
+            android:name="me.chatpass.chatpassme.ViewOtherProfileActivity"
+            android:label="@string/title_activity_view_other_profile"
+            android:parentActivityName="me.chatpass.chatpassme.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="me.chatpass.chatpassme.MainActivity" />
+        </activity>
+        <activity
+            android:name="me.chatpass.chatpassme.ContactsListActivity"
+            android:label="@string/title_activity_contacts_list"
+            android:parentActivityName="me.chatpass.chatpassme.ViewWhistleActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="me.chatpass.chatpassme.ViewWhistleActivity" />
+        </activity>
+        <activity
+            android:name="me.chatpass.chatpassme.AddContactsActivity"
+            android:label="@string/title_activity_add_contacts"
+            android:parentActivityName="me.chatpass.chatpassme.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="me.chatpass.chatpassme.MainActivity" />
         </activity>
     </application>
 

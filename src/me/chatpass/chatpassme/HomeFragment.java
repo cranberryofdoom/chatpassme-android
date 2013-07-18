@@ -9,7 +9,6 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -30,6 +29,7 @@ import com.parse.ParseQuery;
 public class HomeFragment extends Fragment {
 
 	private GridView gridView;
+
 	private ArrayList<String> objectId = new ArrayList<String>();
 	private ArrayList<String> quesTxt = new ArrayList<String>();
 	private ArrayList<Integer> hitCount = new ArrayList<Integer>();
@@ -37,6 +37,8 @@ public class HomeFragment extends Fragment {
 	private ArrayList<byte[]> dataQuesImg = new ArrayList<byte[]>();
 	private ArrayList<Bitmap> userImg = new ArrayList<Bitmap>();
 	private ArrayList<byte[]> dataUserImg = new ArrayList<byte[]>();
+
+	DecodeSampledBitmap decode = new DecodeSampledBitmap();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -102,8 +104,8 @@ public class HomeFragment extends Fragment {
 								try {
 									byte[] data = pQuesImg.getData();
 									dataQuesImg.add(data);
-									quesImg.add(decodeSampledBitmap(data, 200,
-											100));
+									quesImg.add(decode.decodeSampledBitmap(
+											data, 200, 100));
 								} catch (ParseException e1) {
 									dataQuesImg.add(bitMapData);
 									quesImg.add(bitmap);
@@ -115,16 +117,16 @@ public class HomeFragment extends Fragment {
 
 							// Get user image
 							Number userId = objects.get(i).getNumber("userId");
-							ParseQuery<ParseObject> user = ParseQuery
+							ParseQuery<ParseObject> qUser = ParseQuery
 									.getQuery("Users");
-							user.whereEqualTo("userId", userId);
+							qUser.whereEqualTo("userId", userId);
 							try {
-								ParseObject pUser = user.getFirst();
-								ParseFile pUserImg = pUser
+								ParseFile pUserImg = qUser.getFirst()
 										.getParseFile("imageFile");
 								byte[] data = pUserImg.getData();
 								dataUserImg.add(data);
-								userImg.add(decodeSampledBitmap(data, 50, 50));
+								userImg.add(decode.decodeSampledBitmap(data,
+										50, 50));
 							} catch (ParseException e1) {
 							}
 						}
@@ -138,8 +140,9 @@ public class HomeFragment extends Fragment {
 						gridView.setOnItemClickListener(new OnItemClickListener() {
 							public void onItemClick(AdapterView<?> parent,
 									View v, int position, long id) {
-								
-								// Push all necessary information over to next activity
+
+								// Push all necessary information over to next
+								// activity
 								Intent intent = new Intent(activity,
 										ViewWhistleActivity.class);
 								intent.putExtra("iObjectId",
@@ -159,47 +162,5 @@ public class HomeFragment extends Fragment {
 				}
 			});
 		}
-	}
-
-	public static int calculateInSampleSize(BitmapFactory.Options options,
-			int reqWidth, int reqHeight) {
-		// Raw height and width of image
-		final int height = options.outHeight;
-		final int width = options.outWidth;
-
-		int inSampleSize = 64;
-
-		if (height > reqHeight || width > reqWidth) {
-
-			// Calculate ratios of height and width to requested height and
-			// width
-			final int heightRatio = Math.round((float) height
-					/ (float) reqHeight);
-			final int widthRatio = Math.round((float) width / (float) reqWidth);
-
-			// Choose the smallest ratio as inSampleSize value, this will
-			// guarantee a final image with both dimensions larger than or equal
-			// to the requested height and width.
-			inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
-		}
-
-		return inSampleSize;
-	}
-
-	public static Bitmap decodeSampledBitmap(byte[] data, int reqWidth,
-			int reqHeight) {
-
-		// First decode with inJustDecodeBounds=true to check dimensions
-		final BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inJustDecodeBounds = true;
-		BitmapFactory.decodeByteArray(data, 0, data.length, options);
-
-		// Calculate inSampleSize
-		options.inSampleSize = calculateInSampleSize(options, reqWidth,
-				reqHeight);
-
-		// Decode bitmap with inSampleSize set
-		options.inJustDecodeBounds = false;
-		return BitmapFactory.decodeByteArray(data, 0, data.length, options);
 	}
 }

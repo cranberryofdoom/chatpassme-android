@@ -1,9 +1,9 @@
 package me.chatpass.chatpassme;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import me.chatpass.chatpassme.ChooseImageDialogFragment.ChooseImageDialogFragmentListener;
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -26,7 +26,7 @@ public class CreateFragment extends Fragment implements
 
 	private TabHost tabHost;
 	private Bitmap mWhistleImage;
-	private ArrayList<Bitmap> mPhotoAnswerImages = new ArrayList<Bitmap>();
+	private Bitmap[] mPhotoAnswerImages = new Bitmap[4];
 	private Bitmap mRatingImage;
 	private ArrayList<String> textAnswers = new ArrayList<String>();
 
@@ -43,7 +43,6 @@ public class CreateFragment extends Fragment implements
 		setButtonListeners(view);
 
 		return view;
-
 	}
 
 	private void setTabs(View view) {
@@ -84,7 +83,13 @@ public class CreateFragment extends Fragment implements
 			if (whistleText.getText().length() > 0) {
 				String quesTxt = whistleText.getText().toString();
 				intent.putExtra("iQuesTxt", quesTxt);
-				intent.putExtra("iQuesImg", mWhistleImage);
+				
+				ByteArrayOutputStream stream = new ByteArrayOutputStream();
+				mWhistleImage.compress(Bitmap.CompressFormat.PNG, 0, stream);
+				byte[] byteArray = stream.toByteArray();
+				intent.putExtra("iQuesImg", byteArray);
+				Log.i("CREATE FRAGMENT WOES ;__; ", byteArray.toString());
+
 
 				if (ansType.equals("Text")) {
 					intent.putExtra("iAnsType", "TXT");
@@ -127,12 +132,12 @@ public class CreateFragment extends Fragment implements
 
 					// If there are...
 					else {
+						intent.putExtra("iAnsOptTxtArray", textAnswers);
 						for (int i = 0; i < textAnswers.size(); i++) {
-							intent.putExtra("iAnsOptTxt" + i,
-									textAnswers.get(i));
+							intent.putExtra("iAnsOptTxt" + i, textAnswers.get(i));
 						}
-						textAnswers.clear();
 						intent.putExtra("iAnsOptTxtCount", textAnswers.size());
+						textAnswers.clear();
 						startActivity(intent);
 					}
 				}
@@ -140,28 +145,43 @@ public class CreateFragment extends Fragment implements
 				else if (ansType.equals("Photo")) {
 					intent.putExtra("iAnsType", "PHOT");
 
-					if (mPhotoAnswerImages.size() < 2) {
+					// Do a quick count of images
+					int countImages = 0;
+					for (int i = 0; i < mPhotoAnswerImages.length; i++) {
+						if (mPhotoAnswerImages[i] != null) {
+							countImages++;
+						}
+					}
+
+					if (countImages < 2) {
 						MinimumAnswerWarningDialogFragment minimumAnswerWarning = new MinimumAnswerWarningDialogFragment();
 						minimumAnswerWarning.show(getFragmentManager(),
 								"minimumAnswerWarning");
-					}
-					else {
+					} else {
 						int count = 1;
-						for (int i = 0; i < textAnswers.size(); i++) {
-							if (mPhotoAnswerImages.get(i) != null) {
+						for (int i = 0; i < countImages; i++) {
+							if (mPhotoAnswerImages[i] != null) {
+								ByteArrayOutputStream photoStream = new ByteArrayOutputStream();
+								mPhotoAnswerImages[i].compress(Bitmap.CompressFormat.PNG, 0, stream);
+								byte[] photoByteArray = photoStream.toByteArray();								
 								intent.putExtra("iAnsOptImg" + count,
-										mPhotoAnswerImages.get(i));
+										photoByteArray);
 								count++;
 							}
 						}
-						intent.putExtra("iAnsOptImgCount", count);
+						intent.putExtra("iAnsOptImgCount", countImages);
 						startActivity(intent);
 					}
 				}
 
 				else if (ansType.equals("Rate")) {
-					intent.putExtra("iRateOptImg", mRatingImage);
 					intent.putExtra("iAnsType", "RATE");
+					if (mRatingImage != null) {
+						ByteArrayOutputStream rateStream = new ByteArrayOutputStream();
+						mRatingImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+						byte[] rateByteArray = rateStream.toByteArray();
+						intent.putExtra("iRateOptImg", rateByteArray);
+					}
 				}
 			} else {
 				WhistleTextWarningDialogFragment whistleTextWarning = new WhistleTextWarningDialogFragment();
@@ -247,13 +267,12 @@ public class CreateFragment extends Fragment implements
 		imageDialog.show(getFragmentManager(), "chooseImage");
 	}
 
-	@Override
 	public void addWhistleImage(Bitmap whistleImage) {
 		mWhistleImage = whistleImage;
 	}
 
 	public void addPhotoAnswerImage(Bitmap photoAnswerImage, int position) {
-		mPhotoAnswerImages.add(position, photoAnswerImage);
+		mPhotoAnswerImages[position] = photoAnswerImage;
 	}
 
 	public void addRatingImage(Bitmap ratingImage) {

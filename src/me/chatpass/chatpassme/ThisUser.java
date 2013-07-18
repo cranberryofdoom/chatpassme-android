@@ -10,6 +10,7 @@ public class ThisUser {
 	private Number myUserId;
 	private String phoneNumber;
 	private ParseObject myUserParseObject;
+	private Number mySchoolId;
 
 	// Constructor
 	public ThisUser(final ParseInstallation id) {
@@ -30,6 +31,14 @@ public class ThisUser {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+		
+		ParseQuery<ParseObject> qUserSchool = ParseQuery.getQuery("UserSchool");
+		qUserSchool.whereEqualTo("userId", myUserId);
+		try {
+			mySchoolId = qUserSchool.getFirst().getNumber("schoolId");
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 	}
 	
 	public Number userId() {
@@ -38,6 +47,10 @@ public class ThisUser {
 	
 	public ParseObject userParseObject() {
 		return myUserParseObject;
+	}
+	
+	public Number userSchoolId() {
+		return mySchoolId;
 	}
 
 }

@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Fragment;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -27,13 +29,18 @@ import com.parse.ParseQuery;
 
 public class ProfileFragment extends Fragment {
 
-	private Number userId = 257;
 	private TabHost tabHost;
+
 	private int whistleCount;
 	private int clikCount;
 	private int podCount;
 	private ArrayList<String> cliks = new ArrayList<String>();
 	private ArrayList<String> whistles = new ArrayList<String>();
+
+	private DecodeSampledBitmap decode = new DecodeSampledBitmap();
+
+	// Temporary
+	private Number userId = 257;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -118,7 +125,7 @@ public class ProfileFragment extends Fragment {
 
 		// Get it
 		qVoteQues.findInBackground(new FindCallback<ParseObject>() {
-			public void done(List<ParseObject> objects, ParseException e) {
+			public void done(final List<ParseObject> objects, ParseException e) {
 				if (e == null) {
 
 					// Retrieve all whistles created and push into array
@@ -131,17 +138,52 @@ public class ProfileFragment extends Fragment {
 						whistles.add(quesTxt);
 					}
 
-					// Create a new adapter for cliks
+					// Create a new adapter for whistles
 					ArrayAdapter<String> whistlesAdapter = new ArrayAdapter<String>(
 							getActivity(), android.R.layout.simple_list_item_1,
 							android.R.id.text1, whistles);
 
 					// Set the adapter
 					listView.setAdapter(whistlesAdapter);
-				} else {
+
+					// Set list click listener
+					listView.setOnItemClickListener(new OnItemClickListener() {
+						public void onItemClick(AdapterView<?> parent, View v,
+								int position, long id) {
+							viewWhistle(objects, position);
+						}
+					});
 				}
 			}
 		});
+	}
+
+	private void viewWhistle(List<ParseObject> objects, int position) {
+		Intent intent = new Intent(getActivity(), ViewWhistleActivity.class);
+
+		intent.putExtra("iObjectId", objects.get(position).getObjectId());
+		intent.putExtra("iQuesTxt", whistles.get(position));
+		intent.putExtra("iHitCount", objects.get(position).getInt("hitCount"));
+
+		Number userId = objects.get(position).getNumber("userId");
+		ParseQuery<ParseObject> qUser = ParseQuery.getQuery("Users");
+		qUser.whereEqualTo("userId", userId);
+		try {
+			ParseFile pUserImg = qUser.getFirst().getParseFile("imageFile");
+			byte[] dUserImg = pUserImg.getData();
+			intent.putExtra("iUserImg", dUserImg);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		ParseFile pQuesImg = objects.get(position).getParseFile("quesImg");
+		try {
+			byte[] dQuesImg = pQuesImg.getData();
+			intent.putExtra("iQuesImg", dQuesImg);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		startActivity(intent);
 	}
 
 	private void getCliksAnswered(View view) {
@@ -157,7 +199,7 @@ public class ProfileFragment extends Fragment {
 
 		// Get it
 		qVoteAnswer.findInBackground(new FindCallback<ParseObject>() {
-			public void done(List<ParseObject> objects, ParseException e) {
+			public void done(final List<ParseObject> objects, ParseException e) {
 				if (e == null) {
 
 					// Retrieve answered clik questions and push into the array
@@ -192,7 +234,13 @@ public class ProfileFragment extends Fragment {
 
 					// Set the adapter
 					listView.setAdapter(cliksAdapter);
-				} else {
+
+					listView.setOnItemClickListener(new OnItemClickListener() {
+						public void onItemClick(AdapterView<?> parent, View v,
+								int position, long id) {
+							viewWhistle(objects, position);
+						}
+					});
 				}
 			}
 		});
@@ -212,28 +260,32 @@ public class ProfileFragment extends Fragment {
 
 					// Get the profile picture from the ParseObject and cast it
 					// as a ParseFile
-					ParseFile profileImage = (ParseFile) Object
-							.get("imageFile");
-
-					// Get it and turn the byte[] into a Bitmap
-					Bitmap bmp;
+					ParseFile imageFile = (ParseFile) Object.get("imageFile");
 					try {
-						bmp = BitmapFactory.decodeByteArray(
-								profileImage.getData(), 0,
-								profileImage.getData().length);
-						// Push the profilePicture into the ImageButton
-						// view
+						byte[] dImageFile = imageFile.getData();
 						ImageButton image = (ImageButton) view
 								.findViewById(R.id.profile_picture);
-						image.setImageBitmap(bmp);
+						image.setImageBitmap(decode.decodeSampledBitmap(
+								dImageFile, 50, 50));
+						image.setOnClickListener(new OnClickListener() {
+
+							@Override
+							public void onClick(View view) {
+								chooseImage(view);
+							}
+						});
 					} catch (ParseException e1) {
 						e1.printStackTrace();
 					}
-
-				} else {
 				}
 			}
 		});
+	}
+
+	public void chooseImage(View view) {
+		ChooseProfilePictureDialogFragment profilePictureDialog = new ChooseProfilePictureDialogFragment();
+		profilePictureDialog.setTargetFragment(this, 1);
+		profilePictureDialog.show(getFragmentManager(), "chooseProfilePicture");
 	}
 
 	private void getPodCount(View view) {
@@ -308,7 +360,7 @@ public class ProfileFragment extends Fragment {
 			}
 		});
 	}
-	
+
 	private void setupTabs(View view) {
 		tabHost = (TabHost) view.findViewById(R.id.tabhost);
 		tabHost.setup();

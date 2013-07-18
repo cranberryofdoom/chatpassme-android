@@ -38,5 +38,11 @@
     <string name="minimum_answer_warning">There must be at least 2 clicks</string>
     <string name="whistle_text_warning">You forgot write a question!</string>
     <string name="ok">Ok</string>
+    <string name="title_activity_view_other_profile">ViewOtherProfileActivity</string>
+    <string name="title_activity_contacts_list">ContactsListActivity</string>
+    <string name="invite_contacts">Invite Contacts</string>
+    <string name="title_activity_add_contacts">AddContactsActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="send_invitation">Send Invitation</string>
 
 </resources>

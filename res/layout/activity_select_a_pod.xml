@@ -12,13 +12,6 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button
-        android:id="@+id/pod_friends"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/friends" />
-
-    <Button
         android:id="@+id/pod_school"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -31,6 +24,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/everyone"
-        android:onClick="backToMainActivity" />
+        android:onClick="selectEveryone" />
 
 </LinearLayout>

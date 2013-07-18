@@ -9,8 +9,7 @@
             android:layout_width="200dip"
             android:layout_height="100dip"
             android:layout_gravity="center"
-            android:gravity="center"
-            android:src="@android:drawable/ic_menu_gallery" >
+            android:gravity="center" >
 
     </ImageView>
         
@@ -30,8 +29,7 @@
         <ImageView
             android:id="@+id/layout_user_image"
             android:layout_width="50dip"
-            android:layout_height="50dip"
-            android:src="@android:drawable/ic_menu_gallery" >
+            android:layout_height="50dip" >
         </ImageView>
 
         <ImageView

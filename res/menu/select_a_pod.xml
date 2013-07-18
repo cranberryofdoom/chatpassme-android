@@ -2,9 +2,7 @@
 
     <item
         android:id="@+id/select_a_pod"
-        android:orderInCategory="100"
         android:showAsAction="always"
         android:title="@string/select_a_pod"/>
-    
 
 </menu>

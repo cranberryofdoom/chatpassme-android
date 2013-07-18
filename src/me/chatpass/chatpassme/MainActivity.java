@@ -14,21 +14,19 @@ import com.parse.ParseAnalytics;
 import com.parse.ParseInstallation;
 
 public class MainActivity extends Activity {
-	
-	private DialogFragment profilePictureDialog;
-		
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		// Initialize Parse
 		Parse.initialize(this, "N1j4C4EpAYnq44vlpbZnwK0BIdBGAAgPDnyQMZsu",
 				"WdjH2YPmpF14Bo3N0uTpGasp7upf7jn6NIpFDyqW");
 		ParseAnalytics.trackAppOpened(getIntent());
-		
+
 		// Get Installation Id
 		final ParseInstallation id = ParseInstallation.getCurrentInstallation();
-		
+
 		// Set the view
 		setContentView(R.layout.activity_main);
 
@@ -38,23 +36,23 @@ public class MainActivity extends Activity {
 		t.add(R.id.fragment_content, createF);
 		t.commit();
 	}
-	
+
 	// Set the menu
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
-    }
-    
-    // Set the menu click listeners
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        default:
-            return super.onOptionsItemSelected(item);
-        }
-    }
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		getMenuInflater().inflate(R.menu.activity_main, menu);
+		return true;
+	}
+
+	// Set the menu click listeners
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
 
 	// Load the home fragment if the home button is pressed
 	public void loadHomeFragment(View view) {
@@ -77,7 +75,7 @@ public class MainActivity extends Activity {
 		FragmentTransaction t = getFragmentManager().beginTransaction();
 		CreateFragment createF = new CreateFragment();
 		t.replace(R.id.fragment_content, createF);
-		t.commit();	
+		t.commit();
 	}
 
 	// Load the convos fragment if the convos button is pressed
