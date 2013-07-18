@@ -44,5 +44,13 @@
     <string name="title_activity_add_contacts">AddContactsActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="send_invitation">Send Invitation</string>
+    <string name="settings">Settings</string>
+    <string name="feedback">Feedback</string>
+    <string name="more_info">More Info</string>
+    <string name="send_feedback">Click here to send us feedback!</string>
+    <string name="terms_of_service">Terms of Service</string>
+    <string name="community_standards">Community Standards</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="title_activity_settings">SettingsActivity</string>
 
 </resources>
