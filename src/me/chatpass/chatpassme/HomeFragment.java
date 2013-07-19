@@ -12,7 +12,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import android.widget.GridView;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
@@ -37,6 +35,9 @@ public class HomeFragment extends Fragment {
 	private ArrayList<byte[]> dataQuesImg = new ArrayList<byte[]>();
 	private ArrayList<Bitmap> userImg = new ArrayList<Bitmap>();
 	private ArrayList<byte[]> dataUserImg = new ArrayList<byte[]>();
+	private List<ParseObject> mObjects;
+	private Bitmap bitmapPlaceholder;
+
 
 	DecodeSampledBitmap decode = new DecodeSampledBitmap();
 
@@ -59,21 +60,14 @@ public class HomeFragment extends Fragment {
 		// Get the activity that this fragment is called from
 		final Activity activity = getActivity();
 
-		// Get the placeholder image
-		Resources res = getResources();
-		Drawable drawable = res.getDrawable(R.drawable.whistle_placeholder);
-		final Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-		final byte[] bitMapData = stream.toByteArray();
-
 		if (activity != null) {
 			// Get all questions that are directed at everyone
 			ParseQuery<ParseObject> qEveryone = ParseQuery.getQuery("VoteQues");
 			qEveryone.whereEqualTo("target", "EVRY");
-			
+
 			// Get user's school Id
-			ParseQuery<ParseObject> qUserSchool = ParseQuery.getQuery("UserSchool");
+			ParseQuery<ParseObject> qUserSchool = ParseQuery
+					.getQuery("UserSchool");
 			Number userId = 257;
 			Number schoolId = 0;
 			qUserSchool.whereEqualTo("userId", userId);
@@ -82,98 +76,57 @@ public class HomeFragment extends Fragment {
 			} catch (ParseException e1) {
 				e1.printStackTrace();
 			}
-			
+
 			// Get all questions that are targeted at the user's school
 			ParseQuery<ParseObject> qSchool = ParseQuery.getQuery("VoteQues");
 			qSchool.whereEqualTo("target", "SCHL");
 			qSchool.whereEqualTo("schlVal", schoolId);
-			
+
 			List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
 			queries.add(qEveryone);
 			queries.add(qSchool);
-			
-			ParseQuery<ParseObject> query = ParseQuery.or(queries);
-			query.addDescendingOrder("createdAt");
 
-			// query.setLimit(5);
-			
-			query.findInBackground(new FindCallback<ParseObject>() {
+			ParseQuery<ParseObject> query = ParseQuery.or(queries);
+			query.addAscendingOrder("createdAt");
+
+			query.findInBackground(new FindCallback <ParseObject>() {
 				public void done(List<ParseObject> objects, ParseException e) {
 					if (e == null) {
-
-						// Retrieve data from Parse and push all data into
-						// respective arrays
-						for (int i = 0; i < objects.size(); i++) {
-							Log.e("NUMBER", "" + i);
-
-							// Get object id
-							objectId.add(i, objects.get(i).getObjectId());
-
-							// Get whistle question
-							quesTxt.add(i, objects.get(i).getString("quesTxt"));
-
-							// Get number of cliks
-							hitCount.add(i, objects.get(i).getInt("hitCount"));
-
-							// Get question image
-							ParseFile pQuesImg = objects.get(i).getParseFile(
-									"quesImg");
-
-							if (pQuesImg != null) {
-								try {
-									byte[] data = pQuesImg.getData();
-									dataQuesImg.add(data);
-									quesImg.add(decode.decodeSampledBitmap(
-											data, 200, 100));
-								} catch (ParseException e1) {
-									dataQuesImg.add(bitMapData);
-									quesImg.add(bitmap);
-								}
-							} else {
-								dataQuesImg.add(bitMapData);
-								quesImg.add(bitmap);
-							}
-
-							// Get user image
-							Number userId = objects.get(i).getNumber("userId");
-							ParseQuery<ParseObject> qUser = ParseQuery
-									.getQuery("Users");
-							qUser.whereEqualTo("userId", userId);
-							try {
-								ParseFile pUserImg = qUser.getFirst()
-										.getParseFile("imageFile");
-								byte[] data = pUserImg.getData();
-								dataUserImg.add(data);
-								userImg.add(decode.decodeSampledBitmap(data,
-										50, 50));
-							} catch (ParseException e1) {
-							}
-						}
-
+						mObjects = objects;
+						
 						// Create a new grid adapter and set it
-						WhistleGridAdapter gridAdapter = new WhistleGridAdapter(
-								activity, quesTxt, hitCount, quesImg, userImg);
+						WhistleGridAdapter gridAdapter = new WhistleGridAdapter(activity,
+								mObjects);
 						gridView.setAdapter(gridAdapter);
 
 						// Set grid click listener
 						gridView.setOnItemClickListener(new OnItemClickListener() {
-							public void onItemClick(AdapterView<?> parent,
-									View v, int position, long id) {
+							public void onItemClick(AdapterView<?> parent, View v,
+									int position, long id) {
+								
+								// Get the placeholder image
+								Resources res = getResources();
+								Drawable drawable = res.getDrawable(R.drawable.whistle_placeholder);
+								bitmapPlaceholder = ((BitmapDrawable) drawable).getBitmap();
+								ByteArrayOutputStream stream = new ByteArrayOutputStream();
+								bitmapPlaceholder.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 
 								// Push all necessary information over to next
 								// activity
 								Intent intent = new Intent(activity,
 										ViewWhistleActivity.class);
-								intent.putExtra("iObjectId",
-										objectId.get(position));
-								intent.putExtra("iQuesTxt",
-										quesTxt.get(position));
-								intent.putExtra("iHitCount",
-										hitCount.get(position));
-								intent.putExtra("iUserImg",
-										dataUserImg.get(position));
-								intent.putExtra("iQuesImg",
-										dataQuesImg.get(position));
+								Bundle b = new Bundle();
+								b.putString("iObjectId", mObjects.get(position).getObjectId());
+								b.putString("iQuesTxt", mObjects.get(position).getString("quesTxt"));
+								b.putInt("iHitCount", mObjects.get(position).getInt("hitCount"));
+								if (mObjects.get(position).getParseFile("quesImg") == null){
+									
+								}
+								try {
+									b.putByteArray("iQuesImg", mObjects.get(position).getParseFile("quesImg").getData());
+								} catch (ParseException e) {
+									e.printStackTrace();
+								}
 								startActivity(intent);
 							}
 						});
