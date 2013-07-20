@@ -88,38 +88,17 @@ public class CreateFragment extends Fragment implements
 				mWhistleImage.compress(Bitmap.CompressFormat.PNG, 0, stream);
 				byte[] byteArray = stream.toByteArray();
 				intent.putExtra("iQuesImg", byteArray);
-				Log.i("CREATE FRAGMENT WOES ;__; ", byteArray.toString());
-
 
 				if (ansType.equals("Text")) {
 					intent.putExtra("iAnsType", "TXT");
 
 					// Get all the text answers
-					EditText textAnswer1 = (EditText) getView().findViewById(
-							R.id.text_answer1);
-					EditText textAnswer2 = (EditText) getView().findViewById(
-							R.id.text_answer2);
-					EditText textAnswer3 = (EditText) getView().findViewById(
-							R.id.text_answer3);
-					EditText textAnswer4 = (EditText) getView().findViewById(
-							R.id.text_answer4);
-
-					// Add them to the textAnswers ArrayList
-					if (textAnswer1.getText().length() > 0) {
-						String ansOptTxt1 = textAnswer1.getText().toString();
-						textAnswers.add(ansOptTxt1);
-					}
-					if (textAnswer2.getText().length() > 0) {
-						String ansOptTxt2 = textAnswer2.getText().toString();
-						textAnswers.add(ansOptTxt2);
-					}
-					if (textAnswer3.getText().length() > 0) {
-						String ansOptTxt3 = textAnswer3.getText().toString();
-						textAnswers.add(ansOptTxt3);
-					}
-					if (textAnswer4.getText().length() > 0) {
-						String ansOptTxt4 = textAnswer4.getText().toString();
-						textAnswers.add(ansOptTxt4);
+					for (int i = 0; i < 4; i++) {
+						EditText textAnswer = (EditText) getView().findViewById(R.id.text_answer1 + i);
+						if (textAnswer.getText().length() > 0) {
+							String ansOptTxt = textAnswer.getText().toString();
+							textAnswers.add(ansOptTxt);
+						}
 					}
 
 					// There must be two or more text answers
@@ -206,45 +185,16 @@ public class CreateFragment extends Fragment implements
 			}
 		});
 
-		ImageButton imageAnswer1 = (ImageButton) view
-				.findViewById(R.id.image_answer1);
-		imageAnswer1.setOnClickListener(new OnClickListener() {
+		for (int i = 0; i < 4; i++) {
+			ImageButton imageAnswer = (ImageButton) view.findViewById(R.id.image_answer1 + i);
+			imageAnswer.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View view) {
-				chooseImage(view);
-			}
-		});
-
-		ImageButton imageAnswer2 = (ImageButton) view
-				.findViewById(R.id.image_answer2);
-		imageAnswer2.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View view) {
-				chooseImage(view);
-			}
-		});
-
-		ImageButton imageAnswer3 = (ImageButton) view
-				.findViewById(R.id.image_answer3);
-		imageAnswer3.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View view) {
-				chooseImage(view);
-			}
-		});
-
-		ImageButton imageAnswer4 = (ImageButton) view
-				.findViewById(R.id.image_answer4);
-		imageAnswer4.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View view) {
-				chooseImage(view);
-			}
-		});
+				@Override
+				public void onClick(View view) {
+					chooseImage(view);
+				}
+			});
+		}
 
 		ImageButton ratingPhoto = (ImageButton) view
 				.findViewById(R.id.rating_photo);
