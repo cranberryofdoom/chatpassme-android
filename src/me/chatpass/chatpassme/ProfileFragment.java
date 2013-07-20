@@ -160,10 +160,11 @@ public class ProfileFragment extends Fragment {
 
 	private void viewWhistle(List<ParseObject> objects, int position) {
 		Intent intent = new Intent(getActivity(), ViewWhistleActivity.class);
-
-		intent.putExtra("iObjectId", objects.get(position).getObjectId());
-		intent.putExtra("iQuesTxt", whistles.get(position));
-		intent.putExtra("iHitCount", objects.get(position).getInt("hitCount"));
+		final Bundle b = new Bundle();
+		
+		b.putString("iObjectId", objects.get(position).getObjectId());
+		b.putString("iQuesTxt", whistles.get(position));
+		b.putInt("iHitCount", objects.get(position).getInt("hitCount"));
 
 		Number userId = objects.get(position).getNumber("userId");
 		ParseQuery<ParseObject> qUser = ParseQuery.getQuery("Users");
@@ -171,7 +172,7 @@ public class ProfileFragment extends Fragment {
 		try {
 			ParseFile pUserImg = qUser.getFirst().getParseFile("imageFile");
 			byte[] dUserImg = pUserImg.getData();
-			intent.putExtra("iUserImg", dUserImg);
+			b.putByteArray("iUserImg", dUserImg);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -179,10 +180,11 @@ public class ProfileFragment extends Fragment {
 		ParseFile pQuesImg = objects.get(position).getParseFile("quesImg");
 		try {
 			byte[] dQuesImg = pQuesImg.getData();
-			intent.putExtra("iQuesImg", dQuesImg);
+			b.putByteArray("iQuesImg", dQuesImg);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+		intent.putExtras(b);
 		startActivity(intent);
 	}
 

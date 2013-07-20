@@ -59,10 +59,6 @@ public class ViewWhistleActivity extends Activity {
 
 	private ImageButton[] iButton = new ImageButton[4];
 	private Button[] button = new Button[4];
-	private Button button1;
-	private Button button2;
-	private Button button3;
-	private Button button4;
 
 	private DecodeSampledBitmap decode = new DecodeSampledBitmap();
 
