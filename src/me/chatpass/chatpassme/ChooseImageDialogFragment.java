@@ -85,6 +85,19 @@ public class ChooseImageDialogFragment extends DialogFragment {
 				startActivityForResult(intent, 1);
 			}
 		});
+
+		ImageButton chooseImageSearch = (ImageButton) view
+				.findViewById(R.id.choose_image_take);
+
+		chooseImageSearch.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getActivity()
+						SearchImageActivity.class);
+				startActivityForResult(intent, 2);
+			}
+		});
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -188,6 +201,10 @@ public class ChooseImageDialogFragment extends DialogFragment {
 				}
 			}
 			dismiss();
+
+			if (resultCode == 2) {
+				// process search results
+			}
 		}
 	}
 
