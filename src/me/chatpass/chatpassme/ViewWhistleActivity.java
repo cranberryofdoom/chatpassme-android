@@ -76,11 +76,12 @@ public class ViewWhistleActivity extends Activity {
 
 		// Retrieve all data from the last activity
 		Intent intent = getIntent();
-		objectId = intent.getStringExtra("iObjectId");
-		quesTxt = intent.getStringExtra("iQuesTxt");
-		hitCount = intent.getIntExtra("iHitCount", 0);
-		quesImg = intent.getByteArrayExtra("iQuesImg");
-		userImg = intent.getByteArrayExtra("iUserImg");
+		Bundle b = intent.getExtras();
+		objectId = b.getString("iObjectId");
+		quesTxt = b.getString("iQuesTxt");
+		hitCount = b.getInt("iHitCount", 0);
+		quesImg = b.getByteArray("iQuesImg");
+		userImg = b.getByteArray("iUserImg");
 
 		setupActionBar();
 

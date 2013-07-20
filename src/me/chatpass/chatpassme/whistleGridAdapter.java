@@ -132,8 +132,6 @@ public class WhistleGridAdapter extends BaseAdapter {
 			@Override
 			public void done(ParseObject object, ParseException e) {
 				if (e == null) {
-					Log.i("WHAT THE FUCK MAN",
-							"I GOT SOMETHING!" + object.toString());
 					ParseFile pUserImage = object.getParseFile("imageFile");
 					if (pUserImage == null) {
 						holder.userImage.setImageBitmap(bitmapPlaceholder);
