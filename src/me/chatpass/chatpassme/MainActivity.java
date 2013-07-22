@@ -1,19 +1,23 @@
 package me.chatpass.chatpassme;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.app.FragmentTransaction;
-import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseInstallation;
 
 public class MainActivity extends Activity {
+
+	private ImageView imageTracker;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -29,11 +33,17 @@ public class MainActivity extends Activity {
 
 		// Set the view
 		setContentView(R.layout.activity_main);
+		
+		// Set action bar color
+		getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#4B8260")));
 
 		// Immediately load the home fragment
 		FragmentTransaction t = getFragmentManager().beginTransaction();
 		HomeFragment createF = new HomeFragment();
 		t.add(R.id.fragment_content, createF);
+		imageTracker = (ImageButton) findViewById(R.id.home);
+		imageTracker.setEnabled(false);
+		imageTracker.setBackgroundColor(Color.parseColor("#C0432A"));
 		t.commit();
 	}
 
@@ -59,6 +69,7 @@ public class MainActivity extends Activity {
 		FragmentTransaction t = getFragmentManager().beginTransaction();
 		HomeFragment homeF = new HomeFragment();
 		t.replace(R.id.fragment_content, homeF);
+		switchEnabled(imageTracker, R.id.home);
 		t.commit();
 	}
 
@@ -67,6 +78,7 @@ public class MainActivity extends Activity {
 		FragmentTransaction t = getFragmentManager().beginTransaction();
 		ContactsFragment contactsF = new ContactsFragment();
 		t.replace(R.id.fragment_content, contactsF);
+		switchEnabled(imageTracker, R.id.contacts);
 		t.commit();
 	}
 
@@ -75,14 +87,7 @@ public class MainActivity extends Activity {
 		FragmentTransaction t = getFragmentManager().beginTransaction();
 		CreateFragment createF = new CreateFragment();
 		t.replace(R.id.fragment_content, createF);
-		t.commit();
-	}
-
-	// Load the convos fragment if the convos button is pressed
-	public void loadConvosFragment(View view) {
-		FragmentTransaction t = getFragmentManager().beginTransaction();
-		ConvosFragment convosF = new ConvosFragment();
-		t.replace(R.id.fragment_content, convosF);
+		switchEnabled(imageTracker, R.id.create);
 		t.commit();
 	}
 
@@ -91,6 +96,16 @@ public class MainActivity extends Activity {
 		FragmentTransaction t = getFragmentManager().beginTransaction();
 		ProfileFragment profileF = new ProfileFragment();
 		t.replace(R.id.fragment_content, profileF);
+		switchEnabled(imageTracker, R.id.profile);
 		t.commit();
+	}
+	
+	private void switchEnabled(ImageView tracker, int id) {
+		tracker.setEnabled(true);
+		tracker.setBackgroundColor(Color.parseColor("#494949"));
+		imageTracker = (ImageButton) findViewById(id);
+		tracker = imageTracker;
+		tracker.setEnabled(false);
+		tracker.setBackgroundColor(Color.parseColor("#C0432A"));
 	}
 }

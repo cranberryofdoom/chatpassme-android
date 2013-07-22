@@ -3,29 +3,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#E8E5DA"
     android:orientation="horizontal" >
 
     <LinearLayout
         android:id="@+id/view_whistle_send_comment"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" >
+        android:layout_alignParentBottom="true"
+        android:background="#494949"
+        android:padding="10dp" >
 
         <EditText
             android:id="@+id/view_whistle_create_comment"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
             android:layout_weight="1"
+            android:background="#F3F2EF"
             android:ems="10"
-            android:hint="@string/create_comment" >
+            android:hint="@string/create_comment"
+            android:padding="10dp" >
         </EditText>
 
         <Button
             android:id="@+id/view_whistle_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="#C0432A"
             android:onClick="sendComment"
-            android:text="@string/send" />
+            android:text="@string/send"
+            android:textColor="#ffffff" />
     </LinearLayout>
 
     <LinearLayout
@@ -33,18 +41,22 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:orientation="horizontal" >
+        android:background="#494949"
+        android:orientation="horizontal"
+        android:padding="10dp" >
 
-        <ImageButton
+        <ImageView
             android:id="@+id/view_whistle_user_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
             android:onClick="viewOtherProfile" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_marginRight="5dp"
             android:src="@drawable/ic_clik" >
         </ImageView>
 
@@ -54,7 +66,8 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:ems="10"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical"
+            android:textColor="#ffffff" />
     </LinearLayout>
 
     <LinearLayout
@@ -62,6 +75,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/view_whistle_header"
+        android:padding="10dp"
         tools:ignore="UseCompoundDrawables" >
 
         <TextView
@@ -139,7 +153,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/view_whistle_answers"
-        android:layout_centerHorizontal="true" >
+        android:layout_centerHorizontal="true"
+        android:background="#494949"
+        android:padding="10dp" >
 
         <TextView
             android:layout_width="0dip"
@@ -147,12 +163,15 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="@string/comments"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#ffffff" />
 
         <ImageButton
             android:id="@+id/view_whistle_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="#C0432A"
+            android:padding="5dp"
             android:onClick="shareWhistle"
             android:src="@android:drawable/ic_menu_share" />
     </LinearLayout>
@@ -160,7 +179,7 @@
     <GridView
         android:id="@+id/view_whistle_comment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:layout_above="@+id/view_whistle_send_comment"
         android:layout_below="@+id/view_whistle_comment_header"
         android:layout_centerHorizontal="true"

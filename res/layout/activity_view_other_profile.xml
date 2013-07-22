@@ -3,59 +3,69 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#E8E5DA"
     android:orientation="vertical"
+    android:padding="10dp"
     tools:context=".ProfileFragment" >
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="100dp" >
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:background="#F3F2EF"
+        android:padding="10dp" >
 
-        <ImageButton
-            android:id="@+id/profile_picture"
-            android:layout_width="0dip"
-            android:layout_height="fill_parent"
-            android:layout_weight="1" />
+        <ImageView
+            android:id="@+id/other_profile_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <RelativeLayout
             android:layout_width="0dip"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
             android:layout_weight="2"
             android:orientation="vertical" >
 
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_above="@+id/edit_profile"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/other_profile_user_name"
                 android:orientation="horizontal" >
 
                 <TextView
                     android:id="@+id/other_profile_clik_count"
                     android:layout_width="0dp"
-                    android:layout_height="fill_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="center" />
+                    android:background="#E8E5DA"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp" />
 
                 <TextView
                     android:id="@+id/other_profile_whistle_count"
                     android:layout_width="0dp"
-                    android:layout_height="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
                     android:layout_weight="1"
-                    android:gravity="center" />
-
-                <TextView
-                    android:id="@+id/other_profile_pod_count"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:gravity="center" />
+                    android:background="#E8E5DA"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp" />
             </LinearLayout>
 
-            <Button
-                android:id="@+id/edit_profile"
+            <TextView
+                android:id="@+id/other_profile_user_name"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:text="@string/edit_profile" />
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="10dp"
+                android:background="#E8E5DA"
+                android:gravity="center"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -102,20 +112,6 @@
                         android:id="@+id/other_profile_whistles"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/pods"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal" >
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/stats"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal" >
                 </LinearLayout>
             </FrameLayout>
         </LinearLayout>

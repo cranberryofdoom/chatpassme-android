@@ -7,12 +7,12 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +24,6 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
@@ -47,8 +46,8 @@ public class ViewWhistleActivity extends Activity {
 	private View photoWhistle;
 	private View rateWhistle;
 
-	private String objectId;
 	private String quesTxt;
+	private String objectId;
 	private Number quesId;
 	private Integer hitCount;
 	private byte[] quesImg;
@@ -70,7 +69,11 @@ public class ViewWhistleActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_whistle);
 
-		// Retrieve all data from the last activity
+		setupActionBar();
+
+		getActionBar().setBackgroundDrawable(
+				new ColorDrawable(Color.parseColor("#4B8260")));
+
 		Intent intent = getIntent();
 		Bundle b = intent.getExtras();
 		objectId = b.getString("iObjectId");
@@ -78,14 +81,26 @@ public class ViewWhistleActivity extends Activity {
 		hitCount = b.getInt("iHitCount", 0);
 		quesImg = b.getByteArray("iQuesImg");
 		userImg = b.getByteArray("iUserImg");
+		quesId = b.getInt("iQuesId");
 
-		setupActionBar();
+		Log.i("SHIT", objectId);
 
 		setupWhistleInfo();
 
-		checkVisibleAndDisplay();
+		ParseQuery<ParseObject> qWhistle = ParseQuery.getQuery("VoteQues");
+		qWhistle.getInBackground(objectId, new GetCallback<ParseObject>() {
 
-		setupComments();
+			@Override
+			public void done(ParseObject object, ParseException e) {
+				voteQues = object;
+				Log.i("AHHHHH", object.getString("ansType"));
+
+				checkVisibleAndDisplay();
+
+				setupComments();
+			}
+
+		});
 	}
 
 	@Override
@@ -114,7 +129,6 @@ public class ViewWhistleActivity extends Activity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
-	// Set the basic information about the whistle
 	private void setupWhistleInfo() {
 
 		// Set the whistle question text
@@ -130,7 +144,7 @@ public class ViewWhistleActivity extends Activity {
 		}
 
 		// Set the user profile image
-		ImageButton viewWhistleUserImage = (ImageButton) findViewById(R.id.view_whistle_user_image);
+		ImageView viewWhistleUserImage = (ImageView) findViewById(R.id.view_whistle_user_image);
 		viewWhistleUserImage.setImageBitmap(decode.decodeSampledBitmap(userImg,
 				50, 50));
 
@@ -138,25 +152,15 @@ public class ViewWhistleActivity extends Activity {
 		ImageView viewWhistleQuestionImage = (ImageView) findViewById(R.id.view_whistle_question_image);
 		viewWhistleQuestionImage.setImageBitmap(decode.decodeSampledBitmap(
 				quesImg, 50, 50));
-
-		// Get the object id for this whistle
-		final ParseQuery<ParseObject> qVoteQues = ParseQuery
-				.getQuery("VoteQues");
-		try {
-			voteQues = qVoteQues.get(objectId);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		// Get the question id for this whistle
-		quesId = voteQues.getNumber("quesId");
 	}
 
 	private void checkVisibleAndDisplay() {
 		// Check if this user has seen this whistle or not
 		ParseQuery<ParseObject> qVoteAnswer = ParseQuery.getQuery("voteAnswer");
 		qVoteAnswer.whereEqualTo("quesId", quesId);
+		Log.i("QUES ID", "" + quesId);
 		qVoteAnswer.whereEqualTo("userId", myUserId);
+		Log.i("USER ID", "" + myUserId);
 		qVoteAnswer.getFirstInBackground(new GetCallback<ParseObject>() {
 			public void done(ParseObject object, ParseException e) {
 
@@ -282,7 +286,7 @@ public class ViewWhistleActivity extends Activity {
 				ansCount++;
 			}
 		}
-		
+
 		for (int i = 0; i < ansCount; i++) {
 			final int position = i + 1;
 			String ansOptTxt = voteQues.getString("ansOptTxt" + position);
@@ -399,7 +403,8 @@ public class ViewWhistleActivity extends Activity {
 		TextView results = new TextView(ViewWhistleActivity.this);
 		results.setText("" + result.intValue() + "%");
 		results.setTextSize(20);
-		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)button.getLayoutParams();
+		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) button
+				.getLayoutParams();
 		params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		params.addRule(RelativeLayout.ALIGN_BOTTOM, button.getId());
 		results.setPadding(25, 0, 0, 0);
@@ -504,6 +509,8 @@ public class ViewWhistleActivity extends Activity {
 
 					// Set the adapter
 					gridView.setAdapter(gridAdapter);
+					
+					gridView.getLayoutParams().height = 200;
 				}
 			}
 		});
@@ -519,7 +526,6 @@ public class ViewWhistleActivity extends Activity {
 	public void shareWhistle(View view) {
 
 		Intent intent = new Intent(this, ContactsListActivity.class);
-		intent.putExtra("iObjectId", objectId);
 		intent.putExtra("iQuesTxt", quesTxt);
 		intent.putExtra("iHitCount", hitCount);
 		intent.putExtra("iQuesImg", quesImg);

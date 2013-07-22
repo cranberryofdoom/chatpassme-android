@@ -52,5 +52,7 @@
     <string name="community_standards">Community Standards</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="title_activity_settings">SettingsActivity</string>
+    <string name="love">LOVE</string>
+    <string name="hate">HATE</string>
 
 </resources>

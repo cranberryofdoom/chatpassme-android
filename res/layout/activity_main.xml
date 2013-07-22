@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#E8E5DA"
     tools:context=".MainActivity" >
 
     <FrameLayout
@@ -15,51 +16,55 @@
         android:id="@+id/nav_bar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" >
+        android:layout_alignParentBottom="true"
+        android:background="#494949" >
 
         <ImageButton
             android:id="@+id/home"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="#494949"
             android:contentDescription="@string/home"
             android:onClick="loadHomeFragment"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
             android:src="@drawable/ic_tab_home" />
-
-        <ImageButton
-            android:id="@+id/contacts"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/contacts"
-            android:onClick="loadContactsFragment"
-            android:src="@drawable/ic_tab_contacts" />
 
         <ImageButton
             android:id="@+id/create"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="#494949"
             android:contentDescription="@string/create"
             android:onClick="loadCreateFragment"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
             android:src="@drawable/ic_tab_create" />
 
         <ImageButton
-            android:id="@+id/convos"
+            android:id="@+id/contacts"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:contentDescription="@string/convos"
-            android:onClick="loadConvosFragment"
-            android:src="@drawable/ic_tab_convos" />
+            android:background="#494949"
+            android:contentDescription="@string/contacts"
+            android:onClick="loadContactsFragment"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:src="@drawable/ic_tab_contacts" />
 
         <ImageButton
             android:id="@+id/profile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="#494949"
             android:contentDescription="@string/profile"
             android:onClick="loadProfileFragment"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
             android:src="@drawable/ic_tab_profile" />
     </LinearLayout>
 

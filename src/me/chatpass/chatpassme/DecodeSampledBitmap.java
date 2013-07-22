@@ -25,7 +25,7 @@ public class DecodeSampledBitmap {
 		// Raw height and width of image
 		final int height = options.outHeight;
 		final int width = options.outWidth;
-		int inSampleSize = 64;
+		int inSampleSize = 4;
 
 		if (height > reqHeight || width > reqWidth) {
 

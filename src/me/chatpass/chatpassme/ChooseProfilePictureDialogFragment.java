@@ -4,11 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import com.parse.ParseException;
-import com.parse.ParseFile;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -22,6 +17,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 public class ChooseProfilePictureDialogFragment extends DialogFragment {
 
@@ -88,7 +89,7 @@ public class ChooseProfilePictureDialogFragment extends DialogFragment {
 				try {
 					Bitmap myImage = Media.getBitmap(getActivity()
 							.getContentResolver(), chosenImageUri);
-					ImageButton imageButton = (ImageButton) getTargetFragment()
+					ImageView imageButton = (ImageView) getTargetFragment()
 							.getView().findViewById(R.id.profile_picture);
 
 					pushNewPictureToParse(imageButton, myImage);
@@ -107,7 +108,7 @@ public class ChooseProfilePictureDialogFragment extends DialogFragment {
 
 			if (resultCode == -1) {
 				Bitmap myImage = (Bitmap) data.getExtras().get("data");
-				ImageButton imageButton = (ImageButton) getTargetFragment()
+				ImageView imageButton = (ImageView) getTargetFragment()
 						.getView().findViewById(R.id.profile_picture);
 				pushNewPictureToParse(imageButton, myImage);
 			}
@@ -115,7 +116,7 @@ public class ChooseProfilePictureDialogFragment extends DialogFragment {
 		}
 	}
 
-	private void pushNewPictureToParse(ImageButton imageButton, Bitmap myImage) {
+	private void pushNewPictureToParse(ImageView imageButton, Bitmap myImage) {
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		myImage.compress(Bitmap.CompressFormat.PNG, 0, stream);
 		byte[] byteArray = stream.toByteArray();
@@ -130,7 +131,18 @@ public class ChooseProfilePictureDialogFragment extends DialogFragment {
 			e.printStackTrace();
 		}
 
-		imageButton.setImageBitmap(decode
-				.decodeSampledBitmap(byteArray, 50, 50));
+		Bitmap cropped;
+		Bitmap source = decode.decodeSampledBitmap(byteArray, 150, 150);
+		if (source.getWidth() >= source.getHeight()) {
+			cropped = Bitmap.createBitmap(source, source.getWidth() / 2
+					- source.getHeight() / 2, 0, source.getHeight(),
+					source.getHeight());
+		} else {
+			cropped = Bitmap.createBitmap(source, 0, source.getHeight() / 2
+					- source.getWidth() / 2, source.getWidth(),
+					source.getWidth());
+		}
+		Bitmap scaled = Bitmap.createScaledBitmap(cropped, 150, 150, true);
+		imageButton.setImageBitmap(scaled);
 	}
 }

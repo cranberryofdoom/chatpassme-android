@@ -2,49 +2,62 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
-        
-        <ImageView
-            android:id="@+id/layout_whistle_image"
-            android:layout_width="200dip"
-            android:layout_height="100dip"
-            android:layout_gravity="center"
-            android:gravity="center" >
+    android:background="#F3F2EF"
+    android:orientation="vertical"
+    android:padding="10dp" >
 
+    <ImageView
+        android:id="@+id/layout_whistle_image"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:gravity="center" >
     </ImageView>
-        
-    <TextView
-        android:id="@+id/layout_whistle_question"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1" >
-    </TextView>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:paddingTop="10dp" >
 
         <ImageView
-            android:id="@+id/layout_user_image"
-            android:layout_width="50dip"
-            android:layout_height="50dip" >
-        </ImageView>
-
-        <ImageView
+            android:id="@+id/clik"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_clik" >
-
-        </ImageView>
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/layout_whistle_clik_count"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:src="@drawable/ic_clik" />
 
         <TextView
             android:id="@+id/layout_whistle_clik_count"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-        </TextView>
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/layout_whistle_question"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/layout_user_image"
+            android:gravity="left"
+            android:paddingBottom="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/layout_user_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/clik" />
+    </RelativeLayout>
 
 </LinearLayout>

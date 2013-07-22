@@ -3,18 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#E8E5DA"
     android:orientation="vertical"
+    android:padding="10dp"
     tools:context=".CreateFragment" >
 
     <LinearLayout
         android:id="@+id/whistle"
         android:layout_width="match_parent"
-        android:layout_height="100dp" >
+        android:layout_height="100dp"
+        android:layout_marginBottom="10dp"
+        android:background="#F3F2EF"
+        android:padding="10dp" >
 
         <EditText
             android:id="@+id/whistle_text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
             android:layout_weight="2"
             android:ems="10"
             android:hint="@string/create_question_hint"
@@ -27,6 +33,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="#494949"
             android:contentDescription="@string/whistle_photo"
             android:src="@drawable/ic_dialog_take" />
     </LinearLayout>
@@ -50,7 +57,9 @@
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent"
+                android:background="#F3F2EF"
+                android:padding="10dp" >
 
                 <LinearLayout
                     android:id="@+id/text"
@@ -110,6 +119,7 @@
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:background="#494949"
                             android:src="@drawable/ic_dialog_take" />
 
                         <ImageButton
@@ -117,6 +127,7 @@
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:background="#494949"
                             android:src="@drawable/ic_dialog_take" />
                     </LinearLayout>
 
@@ -129,6 +140,7 @@
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:background="#494949"
                             android:src="@drawable/ic_dialog_take" />
 
                         <ImageButton
@@ -136,6 +148,7 @@
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:background="#494949"
                             android:src="@drawable/ic_dialog_take" />
                     </LinearLayout>
                 </LinearLayout>
@@ -156,6 +169,7 @@
                         android:id="@+id/rating_photo"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
+                        android:background="#494949"
                         android:src="@drawable/ic_dialog_take" />
                 </LinearLayout>
             </FrameLayout>

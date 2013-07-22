@@ -5,15 +5,19 @@ import java.util.List;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
@@ -22,22 +26,24 @@ import android.widget.TextView;
 import com.parse.CountCallback;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 public class ProfileFragment extends Fragment {
-
 	private TabHost tabHost;
 
 	private int whistleCount;
 	private int clikCount;
-	private int podCount;
-	private ArrayList<String> cliks = new ArrayList<String>();
-	private ArrayList<String> whistles = new ArrayList<String>();
+	private List<ParseObject> mClikObjects = new ArrayList<ParseObject>();
+	private List<ParseObject> mWhistleObjects = new ArrayList<ParseObject>();
+	private byte[] quesImg;
+	private byte[] userImg;
 
 	private DecodeSampledBitmap decode = new DecodeSampledBitmap();
+	private GetPlaceholder placeholder;
 
 	// Temporary
 	private Number userId = 257;
@@ -47,10 +53,12 @@ public class ProfileFragment extends Fragment {
 			Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-
-		// Inflate the layout for this fragment
 		final View view = inflater.inflate(R.layout.fragment_profile,
 				container, false);
+
+		placeholder = new GetPlaceholder(getActivity());
+
+		setHasOptionsMenu(true);
 
 		// // Get installation id
 		// final ParseInstallation id =
@@ -98,11 +106,11 @@ public class ProfileFragment extends Fragment {
 		// });
 		setupTabs(view);
 
+		getUserName(view);
+
 		getWhistleCount(view);
 
 		getClikCount(view);
-
-		getPodCount(view);
 
 		getProfilePicture(view);
 
@@ -113,44 +121,106 @@ public class ProfileFragment extends Fragment {
 		return view;
 	}
 
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.settings, menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.settings:
+			Intent intent = new Intent(getActivity(), SettingsActivity.class);
+			startActivity(intent);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	private void getUserName(View view) {
+		final TextView textView = (TextView) view.findViewById(R.id.user_name);
+
+		ParseQuery<ParseObject> qUser = ParseQuery.getQuery("Users");
+		qUser.whereEqualTo("userId", userId);
+		qUser.getFirstInBackground(new GetCallback<ParseObject>() {
+
+			@Override
+			public void done(ParseObject object, ParseException e) {
+				String firstName = object.getString("firstName");
+				String lastName = object.getString("lastName");
+				textView.setText(firstName + " " + lastName);
+			}
+		});
+	}
+
+	private void getWhistleCount(final View view) {
+		final TextView profileWhistleCount = (TextView) view
+				.findViewById(R.id.profile_whistle_count);
+
+		ParseQuery<ParseObject> qVoteQues = ParseQuery.getQuery("VoteQues");
+		qVoteQues.whereEqualTo("userId", userId);
+		qVoteQues.countInBackground(new CountCallback() {
+
+			@Override
+			public void done(int count, ParseException e) {
+				if (e == null) {
+					whistleCount = count;
+					if (whistleCount == 1) {
+						profileWhistleCount.setText("" + whistleCount
+								+ " whistle");
+					} else {
+						profileWhistleCount.setText("" + whistleCount
+								+ " whistles");
+					}
+				}
+			}
+		});
+	}
+
+	private void getClikCount(final View view) {
+		final TextView profileClikCount = (TextView) view
+				.findViewById(R.id.profile_clik_count);
+
+		ParseQuery<ParseObject> qVoteAnswer = ParseQuery.getQuery("voteAnswer");
+		qVoteAnswer.whereEqualTo("userId", userId);
+		qVoteAnswer.countInBackground(new CountCallback() {
+
+			@Override
+			public void done(int count, ParseException e) {
+				if (e == null) {
+					clikCount = count;
+					if (clikCount == 1) {
+						profileClikCount.setText("" + clikCount + " clik");
+					} else {
+						profileClikCount.setText("" + clikCount + " cliks");
+					}
+				}
+			}
+		});
+	}
+
 	private void getWhistlesCreated(View view) {
 		final ListView listView = (ListView) view
 				.findViewById(R.id.profile_whistles);
 
-		// Create a ParseObject query and ask for the VoteQues class
 		ParseQuery<ParseObject> qVoteQues = ParseQuery.getQuery("VoteQues");
-
-		// Ask for all the times userId shows up
 		qVoteQues.whereEqualTo("userId", userId);
-
-		// Get it
 		qVoteQues.findInBackground(new FindCallback<ParseObject>() {
+
+			@Override
 			public void done(final List<ParseObject> objects, ParseException e) {
 				if (e == null) {
+					mWhistleObjects = objects;
 
-					// Retrieve all whistles created and push into array
-					for (int i = 0; i < objects.size(); i++) {
+					WhistleListAdapter whistlesAdapter = new WhistleListAdapter(
+							getActivity(), mWhistleObjects);
 
-						// Get the string for the quesTxt
-						String quesTxt = objects.get(i).getString("quesTxt");
-
-						// Add it to the whistles ArrayList
-						whistles.add(quesTxt);
-					}
-
-					// Create a new adapter for whistles
-					ArrayAdapter<String> whistlesAdapter = new ArrayAdapter<String>(
-							getActivity(), android.R.layout.simple_list_item_1,
-							android.R.id.text1, whistles);
-
-					// Set the adapter
 					listView.setAdapter(whistlesAdapter);
 
-					// Set list click listener
 					listView.setOnItemClickListener(new OnItemClickListener() {
 						public void onItemClick(AdapterView<?> parent, View v,
 								int position, long id) {
-							viewWhistle(objects, position);
+							viewWhistle(mWhistleObjects.get(position));
 						}
 					});
 				}
@@ -158,127 +228,153 @@ public class ProfileFragment extends Fragment {
 		});
 	}
 
-	private void viewWhistle(List<ParseObject> objects, int position) {
-		Intent intent = new Intent(getActivity(), ViewWhistleActivity.class);
-		final Bundle b = new Bundle();
-		
-		b.putString("iObjectId", objects.get(position).getObjectId());
-		b.putString("iQuesTxt", whistles.get(position));
-		b.putInt("iHitCount", objects.get(position).getInt("hitCount"));
-
-		Number userId = objects.get(position).getNumber("userId");
-		ParseQuery<ParseObject> qUser = ParseQuery.getQuery("Users");
-		qUser.whereEqualTo("userId", userId);
-		try {
-			ParseFile pUserImg = qUser.getFirst().getParseFile("imageFile");
-			byte[] dUserImg = pUserImg.getData();
-			b.putByteArray("iUserImg", dUserImg);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		ParseFile pQuesImg = objects.get(position).getParseFile("quesImg");
-		try {
-			byte[] dQuesImg = pQuesImg.getData();
-			b.putByteArray("iQuesImg", dQuesImg);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		intent.putExtras(b);
-		startActivity(intent);
-	}
-
 	private void getCliksAnswered(View view) {
-
 		final ListView listView = (ListView) view
 				.findViewById(R.id.profile_cliks);
 
-		// Create a ParseObject query and ask for the VoteAnswer class
 		ParseQuery<ParseObject> qVoteAnswer = ParseQuery.getQuery("voteAnswer");
-
-		// Ask for all the times userId shows up
 		qVoteAnswer.whereEqualTo("userId", userId);
-
-		// Get it
 		qVoteAnswer.findInBackground(new FindCallback<ParseObject>() {
 			public void done(final List<ParseObject> objects, ParseException e) {
 				if (e == null) {
-
-					// Retrieve answered clik questions and push into the array
 					for (int i = 0; i < objects.size(); i++) {
-
-						// Get the quesId for the the clik
 						Number quesId = objects.get(i).getNumber("quesId");
-
-						// Create a new ParseObject to get the clik question
 						ParseQuery<ParseObject> qVoteQues = ParseQuery
 								.getQuery("VoteQues");
-
-						// Ask for all the times quesId shows up
 						qVoteQues.whereEqualTo("quesId", quesId);
-						try {
+						qVoteQues
+								.getFirstInBackground(new GetCallback<ParseObject>() {
 
-							// Get the string for the quesTxt
-							String quesTxt = qVoteQues.getFirst().getString(
-									"quesTxt");
+									@Override
+									public void done(ParseObject object,
+											ParseException e) {
+										if (e == null) {
+											mClikObjects.add(object);
 
-							// Add it to the cliks ArrayList
-							cliks.add(quesTxt);
+											WhistleListAdapter whistlesAdapter = new WhistleListAdapter(
+													getActivity(), mClikObjects);
 
-						} catch (ParseException e1) {
-						}
+											listView.setAdapter(whistlesAdapter);
+
+											listView.setOnItemClickListener(new OnItemClickListener() {
+												public void onItemClick(
+														AdapterView<?> parent,
+														View v, int position,
+														long id) {
+													viewWhistle(mClikObjects
+															.get(position));
+												}
+											});
+										}
+									}
+								});
 					}
-
-					// Create a new adapter for cliks
-					ArrayAdapter<String> cliksAdapter = new ArrayAdapter<String>(
-							getActivity(), android.R.layout.simple_list_item_1,
-							android.R.id.text1, cliks);
-
-					// Set the adapter
-					listView.setAdapter(cliksAdapter);
-
-					listView.setOnItemClickListener(new OnItemClickListener() {
-						public void onItemClick(AdapterView<?> parent, View v,
-								int position, long id) {
-							viewWhistle(objects, position);
-						}
-					});
 				}
 			}
 		});
 	}
 
 	private void getProfilePicture(final View view) {
-		// Create a ParseObject query and ask for the Users class
+		final ImageView image = (ImageView) view
+				.findViewById(R.id.profile_picture);
+
 		ParseQuery<ParseObject> qUsers = ParseQuery.getQuery("Users");
-
-		// Find the specific userId
 		qUsers.whereEqualTo("userId", userId);
-
-		// Get it
 		qUsers.getFirstInBackground(new GetCallback<ParseObject>() {
 			public void done(ParseObject Object, ParseException e) {
 				if (e == null) {
-
-					// Get the profile picture from the ParseObject and cast it
-					// as a ParseFile
 					ParseFile imageFile = (ParseFile) Object.get("imageFile");
-					try {
-						byte[] dImageFile = imageFile.getData();
-						ImageButton image = (ImageButton) view
-								.findViewById(R.id.profile_picture);
-						image.setImageBitmap(decode.decodeSampledBitmap(
-								dImageFile, 50, 50));
-						image.setOnClickListener(new OnClickListener() {
+					imageFile.getDataInBackground(new GetDataCallback() {
 
-							@Override
-							public void onClick(View view) {
-								chooseImage(view);
+						@Override
+						public void done(byte[] data, ParseException e) {
+							Bitmap cropped;
+							Bitmap source = decode.decodeSampledBitmap(data,
+									150, 150);
+							if (source.getWidth() >= source.getHeight()) {
+								cropped = Bitmap.createBitmap(
+										source,
+										source.getWidth() / 2
+												- source.getHeight() / 2, 0,
+										source.getHeight(), source.getHeight());
+							} else {
+								cropped = Bitmap.createBitmap(
+										source,
+										0,
+										source.getHeight() / 2
+												- source.getWidth() / 2,
+										source.getWidth(), source.getWidth());
 							}
-						});
-					} catch (ParseException e1) {
-						e1.printStackTrace();
-					}
+							Bitmap scaled = Bitmap.createScaledBitmap(cropped,
+									150, 150, true);
+							image.setImageBitmap(scaled);
+						}
+					});
+				}
+			}
+		});
+		image.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				chooseImage(view);
+			}
+		});
+	}
+
+	private void viewWhistle(final ParseObject object) {
+		final Intent intent = new Intent(getActivity(),
+				ViewWhistleActivity.class);
+		final Bundle b = new Bundle();
+
+		b.putString("iObjectId", object.getObjectId());
+		b.putString("iQuesTxt", object.getString("quesTxt"));
+		b.putInt("iHitCount", object.getInt("hitCount"));
+		b.putInt("iQuesId", object.getNumber("quesId").intValue());
+
+		ParseFile pQuesImg = object.getParseFile("quesImg");
+		if (pQuesImg != null) {
+			pQuesImg.getDataInBackground(new GetDataCallback() {
+
+				@Override
+				public void done(byte[] data, ParseException e) {
+					b.putByteArray("iQuesImg", data);
+					Log.i("AFKDLS", data.toString());
+					getUserProfileImage(intent, object, b);
+				}
+
+			});
+		} else {
+			b.putByteArray("iQuesImg", placeholder.getByteArray());
+			Log.i("I DIDN'T GET ANYTHING", placeholder.getByteArray()
+					.toString());
+			getUserProfileImage(intent, object, b);
+		}
+	}
+
+	private void getUserProfileImage(final Intent intent, ParseObject object,
+			final Bundle b) {
+		Number userId = object.getNumber("userId");
+		ParseQuery<ParseObject> qUser = ParseQuery.getQuery("Users");
+		qUser.whereEqualTo("userId", userId);
+		qUser.getFirstInBackground(new GetCallback<ParseObject>() {
+
+			@Override
+			public void done(ParseObject object, ParseException e) {
+				ParseFile pUserImg = object.getParseFile("imageFile");
+				if (pUserImg == null) {
+					b.putByteArray("iUserImg", placeholder.getByteArray());
+				} else {
+					pUserImg.getDataInBackground(new GetDataCallback() {
+
+						@Override
+						public void done(byte[] data, ParseException e) {
+							b.putByteArray("iUserImg", data);
+							Log.i("WOOHOO", data.toString());
+							intent.putExtras(b);
+							startActivity(intent);
+						}
+					});
 				}
 			}
 		});
@@ -288,79 +384,6 @@ public class ProfileFragment extends Fragment {
 		ChooseProfilePictureDialogFragment profilePictureDialog = new ChooseProfilePictureDialogFragment();
 		profilePictureDialog.setTargetFragment(this, 1);
 		profilePictureDialog.show(getFragmentManager(), "chooseProfilePicture");
-	}
-
-	private void getPodCount(View view) {
-		// Just set the default podCount to 0
-		podCount = 0;
-		TextView profilePodCount = (TextView) view
-				.findViewById(R.id.profile_pod_count);
-		profilePodCount.setText("" + podCount + " pods");
-	}
-
-	private void getClikCount(final View view) {
-		// Create a ParseObject query and ask for the VoteAnswer class
-		ParseQuery<ParseObject> qVoteAnswer = ParseQuery.getQuery("voteAnswer");
-
-		// Ask for all the times userId shows up
-		qVoteAnswer.whereEqualTo("userId", userId);
-
-		// Count how many times userId has cliked
-		qVoteAnswer.countInBackground(new CountCallback() {
-			public void done(int count, ParseException e) {
-				if (e == null) {
-
-					// Record the clik number
-					clikCount = count;
-
-					// Push the clik number in the TextView
-					TextView profileClikCount = (TextView) view
-							.findViewById(R.id.profile_clik_count);
-
-					// Make sure that we get the grammar right
-					if (clikCount == 1) {
-						profileClikCount.setText("" + clikCount + " clik");
-					} else {
-						profileClikCount.setText("" + clikCount + " cliks");
-					}
-				} else {
-				}
-			}
-		});
-	}
-
-	private void getWhistleCount(final View view) {
-		// Create a ParseObject query and ask for the VoteQues
-		// class
-		ParseQuery<ParseObject> qVoteQues = ParseQuery.getQuery("VoteQues");
-
-		// Ask for all the times userId shows up
-		qVoteQues.whereEqualTo("userId", userId);
-
-		// Count how many times userId has created a whistle
-		qVoteQues.countInBackground(new CountCallback() {
-			public void done(int count, ParseException e) {
-				if (e == null) {
-
-					// Record the whistle number
-					whistleCount = count;
-
-					// Push the whistle number in the TextView
-					TextView profileWhistleCount = (TextView) view
-							.findViewById(R.id.profile_whistle_count);
-
-					// Make sure that we get the grammar right
-					if (whistleCount == 1) {
-						profileWhistleCount.setText("" + whistleCount
-								+ " whistle");
-					} else {
-						profileWhistleCount.setText("" + whistleCount
-								+ " whistles");
-					}
-				} else {
-				}
-			}
-		});
 	}
 
 	private void setupTabs(View view) {
@@ -375,17 +398,7 @@ public class ProfileFragment extends Fragment {
 		spec2.setIndicator("Whistles");
 		spec2.setContent(R.id.whistles);
 
-		TabSpec spec3 = tabHost.newTabSpec("Pods");
-		spec3.setContent(R.id.pods);
-		spec3.setIndicator("Pods");
-
-		TabSpec spec4 = tabHost.newTabSpec("Stats");
-		spec4.setContent(R.id.stats);
-		spec4.setIndicator("Stats");
-
 		tabHost.addTab(spec1);
 		tabHost.addTab(spec2);
-		tabHost.addTab(spec3);
-		tabHost.addTab(spec4);
 	}
 }

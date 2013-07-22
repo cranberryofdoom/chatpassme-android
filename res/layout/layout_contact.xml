@@ -7,14 +7,16 @@
     <ImageView
         android:id="@+id/layout_contact_user_image"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/layout_contact_user_name"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/layout_contact_user_image"
+        android:layout_below="@id/layout_contact_user_image"
         android:layout_centerHorizontal="true"
+        android:background="#F3F2EF"
         android:gravity="center" />
 
 </RelativeLayout>

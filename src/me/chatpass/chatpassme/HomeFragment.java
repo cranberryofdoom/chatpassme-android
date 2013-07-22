@@ -1,17 +1,13 @@
 package me.chatpass.chatpassme;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +17,7 @@ import android.widget.GridView;
 
 import com.parse.FindCallback;
 import com.parse.GetCallback;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -30,17 +27,10 @@ public class HomeFragment extends Fragment {
 
 	private GridView gridView;
 
-	private ArrayList<String> objectId = new ArrayList<String>();
-	private ArrayList<String> quesTxt = new ArrayList<String>();
-	private ArrayList<Integer> hitCount = new ArrayList<Integer>();
-	private ArrayList<Bitmap> quesImg = new ArrayList<Bitmap>();
-	private ArrayList<byte[]> dataQuesImg = new ArrayList<byte[]>();
-	private ArrayList<Bitmap> userImg = new ArrayList<Bitmap>();
-	private ArrayList<byte[]> dataUserImg = new ArrayList<byte[]>();
 	private List<ParseObject> mObjects;
-	private Bitmap bitmapPlaceholder;
 
 	DecodeSampledBitmap decode = new DecodeSampledBitmap();
+	private GetPlaceholder placeholder;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,6 +41,8 @@ public class HomeFragment extends Fragment {
 
 		// Identify which grid view we're going to load data into
 		gridView = (GridView) view.findViewById(R.id.home_grid_view);
+
+		placeholder = new GetPlaceholder(getActivity());
 
 		return view;
 	}
@@ -95,96 +87,78 @@ public class HomeFragment extends Fragment {
 					if (e == null) {
 						mObjects = objects;
 
-						// Create a new grid adapter and set it
 						WhistleGridAdapter gridAdapter = new WhistleGridAdapter(
 								activity, mObjects);
 						gridView.setAdapter(gridAdapter);
 
-						// Set grid click listener
 						gridView.setOnItemClickListener(new OnItemClickListener() {
 							public void onItemClick(AdapterView<?> parent,
-									View v, int position, long id) {
-
-								// Get the placeholder image
-								Resources res = getResources();
-								Drawable drawable = res
-										.getDrawable(R.drawable.whistle_placeholder);
-								bitmapPlaceholder = ((BitmapDrawable) drawable)
-										.getBitmap();
-								ByteArrayOutputStream stream = new ByteArrayOutputStream();
-								bitmapPlaceholder
-										.compress(Bitmap.CompressFormat.JPEG,
-												100, stream);
-								final byte[] placeholderByteArray = stream
-										.toByteArray();
-
-								// Push all necessary information over to next
-								// activity
-								final Intent intent = new Intent(activity,
-										ViewWhistleActivity.class);
-								final Bundle b = new Bundle();
-								b.putString("iObjectId", mObjects.get(position)
-										.getObjectId());
-								b.putString("iQuesTxt", mObjects.get(position)
-										.getString("quesTxt"));
-								b.putInt("iHitCount", mObjects.get(position)
-										.getInt("hitCount"));
-
-								if (mObjects.get(position).getParseFile(
-										"quesImg") == null) {
-									b.putByteArray("iQuesImg",
-											placeholderByteArray);
-								}
-								try {
-									b.putByteArray("iQuesImg",
-											mObjects.get(position)
-													.getParseFile("quesImg")
-													.getData());
-								} catch (ParseException e) {
-									e.printStackTrace();
-								}
-
-								Number userId = mObjects.get(position)
-										.getNumber("userId");
-								ParseQuery<ParseObject> qUser = ParseQuery
-										.getQuery("Users");
-								qUser.whereEqualTo("userId", userId);
-								qUser.getFirstInBackground(new GetCallback<ParseObject>() {
-
-									@Override
-									public void done(ParseObject object,
-											ParseException e) {
-										if (e == null) {
-											ParseFile pUserImage = object
-													.getParseFile("imageFile");
-											if (pUserImage == null) {
-												b.putByteArray("iQuesImg",
-														placeholderByteArray);
-											} else {
-												try {
-													b.putByteArray("iUserImg",
-															pUserImage
-																	.getData());
-												} catch (ParseException e1) {
-													b.putByteArray("iQuesImg",
-															placeholderByteArray);
-												}
-											}
-										} else {
-											b.putByteArray("iQuesImg",
-													placeholderByteArray);
-										}
-										
-										intent.putExtras(b);
-
-										startActivity(intent);
-									}
-								});
+									View v, final int position, long id) {
+								viewWhistle(mObjects
+										.get(position));
 							}
 						});
 					}
 				}
 			});
 		}
+	}
+	
+	private void viewWhistle(final ParseObject object) {
+		final Intent intent = new Intent(getActivity(),
+				ViewWhistleActivity.class);
+		final Bundle b = new Bundle();
+
+		b.putString("iObjectId", object.getObjectId());
+		b.putString("iQuesTxt", object.getString("quesTxt"));
+		b.putInt("iHitCount", object.getInt("hitCount"));
+		b.putInt("iQuesId", object.getNumber("quesId").intValue());
+
+		ParseFile pQuesImg = object.getParseFile("quesImg");
+		if (pQuesImg != null) {
+			pQuesImg.getDataInBackground(new GetDataCallback() {
+
+				@Override
+				public void done(byte[] data, ParseException e) {
+					b.putByteArray("iQuesImg", data);
+					Log.i("AFKDLS", data.toString());
+					getUserProfileImage(intent, object, b);
+				}
+
+			});
+		} else {
+			b.putByteArray("iQuesImg", placeholder.getByteArray());
+			Log.i("I DIDN'T GET ANYTHING", placeholder.getByteArray()
+					.toString());
+			getUserProfileImage(intent, object, b);
+		}
+	}
+	
+	private void getUserProfileImage(final Intent intent, ParseObject object,
+			final Bundle b) {
+		Number userId = object.getNumber("userId");
+		ParseQuery<ParseObject> qUser = ParseQuery.getQuery("Users");
+		qUser.whereEqualTo("userId", userId);
+		qUser.getFirstInBackground(new GetCallback<ParseObject>() {
+
+			@Override
+			public void done(ParseObject object, ParseException e) {
+				ParseFile pUserImg = object.getParseFile("imageFile");
+				if (pUserImg == null) {
+					b.putByteArray("iUserImg", placeholder.getByteArray());
+				} else {
+					pUserImg.getDataInBackground(new GetDataCallback() {
+
+						@Override
+						public void done(byte[] data, ParseException e) {
+							b.putByteArray("iUserImg", data);
+							Log.i("WOOHOO", data.toString());
+							intent.putExtras(b);
+							startActivity(intent);
+						}
+					});
+				}
+			}
+		});
 	}
 }

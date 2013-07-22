@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:padding="10dp" >
 
     <ImageView
         android:id="@+id/rate_image"
@@ -10,37 +11,67 @@
         android:layout_centerHorizontal="true" />
 
     <RelativeLayout
+        android:id="@+id/rate_buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/rate_image" >
+        android:layout_below="@+id/rate_image"
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true" >
 
         <ImageButton
             android:id="@+id/button1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="#F3F2EF"
+            android:padding="10dp"
             android:src="@drawable/ic_rating_yay" />
 
         <ImageButton
             android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:layout_toRightOf="@+id/button1"
+            android:background="#F3F2EF"
+            android:padding="10dp"
             android:src="@drawable/ic_rating_unsure" />
 
         <ImageButton
             android:id="@+id/button3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:layout_toRightOf="@+id/button2"
+            android:background="#F3F2EF"
+            android:padding="10dp"
             android:src="@drawable/ic_rating_meh" />
 
         <ImageButton
             android:id="@+id/button4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:layout_toRightOf="@+id/button3"
+            android:background="#F3F2EF"
+            android:padding="10dp"
             android:src="@drawable/ic_rating_ew" />
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/love"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rate_buttons"
+        android:layout_alignParentLeft="true"
+        android:text="@string/love" />
+
+    <TextView
+        android:id="@+id/hate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rate_buttons"
+        android:layout_alignParentRight="true"
+        android:text="@string/hate" />
 
 </RelativeLayout>

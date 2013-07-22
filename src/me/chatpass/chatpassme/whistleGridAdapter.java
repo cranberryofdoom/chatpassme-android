@@ -1,15 +1,10 @@
 package me.chatpass.chatpassme;
 
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,28 +21,15 @@ import com.parse.ParseQuery;
 
 public class WhistleGridAdapter extends BaseAdapter {
 	private Context mContext;
-	private ArrayList<String> mQuesTxt;
-	private ArrayList<Integer> mHitCount;
-	private ArrayList<Bitmap> mQuesImg;
-	private ArrayList<Bitmap> mUserImg;
-	private ArrayList<ParseFile> pQuesImg;
-	private ArrayList<ParseFile> pUserImg;
-	private ParseQuery<ParseObject> mQuery;
 	private List<ParseObject> mObjects;
-	private Bitmap bitmapPlaceholder;
 
 	DecodeSampledBitmap decode = new DecodeSampledBitmap();
+	private GetPlaceholder mPlaceholder;
 
 	public WhistleGridAdapter(Context c, List<ParseObject> objects) {
 		mContext = c;
 		mObjects = objects;
-
-		// Get the placeholder image
-		Resources res = c.getResources();
-		Drawable drawable = res.getDrawable(R.drawable.whistle_placeholder);
-		bitmapPlaceholder = ((BitmapDrawable) drawable).getBitmap();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		bitmapPlaceholder.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+		mPlaceholder = new GetPlaceholder((Activity) c);
 	}
 
 	public static class ViewHolder {
@@ -98,32 +80,39 @@ public class WhistleGridAdapter extends BaseAdapter {
 			holder = (ViewHolder) gridView.getTag();
 		}
 
-		// Push all question texts
 		holder.whistleQuestion.setText(mObjects.get(position).getString(
 				"quesTxt"));
 
-		// Push all clik counts
 		holder.whistleClikCount.setText(mObjects.get(position)
 				.getNumber("hitCount").toString());
 
-		// Push all whistle images
 		ParseFile pWhistleImage = mObjects.get(position)
 				.getParseFile("quesImg");
 		if (pWhistleImage == null) {
-			holder.whistleImage.setImageBitmap(bitmapPlaceholder);
+			holder.whistleImage.setImageBitmap(mPlaceholder.getBitmap());
 		} else {
 			pWhistleImage.getDataInBackground(new GetDataCallback() {
 
 				@Override
 				public void done(byte[] data, ParseException e) {
-					holder.whistleImage.setImageBitmap(decode
-							.decodeSampledBitmap(data, 200, 100));
+					Bitmap cropped;
+					Bitmap source = decode.decodeSampledBitmap(data, 200, 100);
+					if (source.getWidth() >= source.getHeight()) {
+						cropped = Bitmap.createBitmap(source, source.getWidth()
+								/ 2 - source.getHeight() / 2, 0,
+								source.getHeight(), source.getHeight());
+					} else {
+						cropped = Bitmap.createBitmap(source, 0,
+								source.getHeight() / 2 - source.getWidth() / 2,
+								source.getWidth(), source.getWidth());
+					}
+					Bitmap scaled = Bitmap.createScaledBitmap(cropped, 200,
+							200, true);
+					holder.whistleImage.setImageBitmap(scaled);
 				}
-
 			});
 		}
 
-		// Push all user images
 		Number userId = mObjects.get(position).getNumber("userId");
 		ParseQuery<ParseObject> qUser = ParseQuery.getQuery("Users");
 		qUser.whereEqualTo("userId", userId);
@@ -134,18 +123,38 @@ public class WhistleGridAdapter extends BaseAdapter {
 				if (e == null) {
 					ParseFile pUserImage = object.getParseFile("imageFile");
 					if (pUserImage == null) {
-						holder.userImage.setImageBitmap(bitmapPlaceholder);
+						holder.userImage.setImageBitmap(mPlaceholder
+								.getBitmap());
 					} else {
 						try {
-							holder.userImage.setImageBitmap(decode
-									.decodeSampledBitmap(pUserImage.getData(),
-											50, 50));
+							byte[] data = pUserImage.getData();
+							Bitmap cropped;
+							Bitmap source = decode.decodeSampledBitmap(data,
+									100, 100);
+							if (source.getWidth() >= source.getHeight()) {
+								cropped = Bitmap.createBitmap(
+										source,
+										source.getWidth() / 2
+												- source.getHeight() / 2, 0,
+										source.getHeight(), source.getHeight());
+							} else {
+								cropped = Bitmap.createBitmap(
+										source,
+										0,
+										source.getHeight() / 2
+												- source.getWidth() / 2,
+										source.getWidth(), source.getWidth());
+							}
+							Bitmap scaled = Bitmap.createScaledBitmap(cropped,
+									50, 50, true);
+							holder.userImage.setImageBitmap(scaled);
 						} catch (ParseException e1) {
-							holder.userImage.setImageBitmap(bitmapPlaceholder);
+							holder.userImage.setImageBitmap(mPlaceholder
+									.getBitmap());
 						}
 					}
 				} else {
-					holder.userImage.setImageBitmap(bitmapPlaceholder);
+					holder.userImage.setImageBitmap(mPlaceholder.getBitmap());
 				}
 			}
 		});
