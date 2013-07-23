@@ -23,11 +23,6 @@ public class MainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Initialize Parse
-		Parse.initialize(this, "N1j4C4EpAYnq44vlpbZnwK0BIdBGAAgPDnyQMZsu",
-				"WdjH2YPmpF14Bo3N0uTpGasp7upf7jn6NIpFDyqW");
-		ParseAnalytics.trackAppOpened(getIntent());
-
 		// Get Installation Id
 		final ParseInstallation id = ParseInstallation.getCurrentInstallation();
 

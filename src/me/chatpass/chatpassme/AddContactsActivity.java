@@ -21,7 +21,6 @@ public class AddContactsActivity extends Activity {
 	private ArrayList<String> fullNameArray = new ArrayList<String>();
 	private String messageString;
 
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
