@@ -46,41 +46,55 @@ public class VerificationScreen extends Activity {
 	public void moveToCreateProfilePage (View view){
 		Intent intent = new Intent(this,CreateProfile.class);
 
-//		ParseQuery<ParseObject> qUsers = ParseQuery.getQuery("Users");
-//
-//		// Retrieve the most recent ones
-//		qUsers.orderByDescending("createdAt");
-//		qUsers.setSkip(1);
-//		
-//		qUsers.getFirstInBackground(new GetCallback<ParseObject>() {
-//			public void done(ParseObject biggestUser, ParseException e) {
-//
-//				//get most recent's userId and increment by one
-//				newId = biggestUser.getNumber("userId").intValue() + 1;
-//				
-//				//get current telephone number using id, store as string 
-//				ParseInstallation id = ParseInstallation.getCurrentInstallation();
-//				String myNumber = id.getString("phoneNumber");
-//
-//				// Create a Parse object query and ask for the Users class
-//				ParseQuery<ParseObject> qUsers = ParseQuery.getQuery("Users");
-//
-//				// Ask for the specific phone number that is correlated to the current user
-//				qUsers.whereEqualTo("phoneNumber", myNumber);
-//
-//				// Find the first object that has the current user's telephone number
-//				try {
-//					ParseObject mostRecent = qUsers.getFirst();
-//					mostRecent.put("userId", newId);
-//					mostRecent.saveInBackground();
-//				} catch (ParseException e1) {
-//					e1.printStackTrace();
-//				}
-//			}
-//		});  
+		ParseQuery<ParseObject> qUsers = ParseQuery.getQuery("Users");
+
+		// Retrieve the most recent ones
+		qUsers.orderByDescending("createdAt");
+		qUsers.setSkip(1);
 		
+		qUsers.getFirstInBackground(new GetCallback<ParseObject>() {
+			public void done(ParseObject biggestUser, ParseException e) {
+
+				//get most recent's userId and increment by one
+				newId = biggestUser.getNumber("userId").intValue() + 1;
+				
+				//get current telephone number using id, store as string 
+				ParseInstallation id = ParseInstallation.getCurrentInstallation();
+				String myNumber = id.getString("phoneNumber");
+
+				// Create a Parse object query and ask for the Users class
+				ParseQuery<ParseObject> qUsers = ParseQuery.getQuery("Users");
+
+				// Ask for the specific phone number that is correlated to the current user
+				qUsers.whereEqualTo("phoneNumber", myNumber);
+
+				// Find the first object that has the current user's telephone number
+				try {
+					//place and save userId in Users Class
+					ParseObject mostRecent = qUsers.getFirst();
+					mostRecent.put("userId", newId);
+					mostRecent.saveInBackground();
+
+					//place and save userId in UserSchool Class
+					ParseObject newUserParseObject = new ParseObject("UserSchool");
+					newUserParseObject.put("userId",newId);
+					newUserParseObject.saveInBackground();
+					
+					//place and save userId in UserSchool Class
+					ParseObject newUserParseObject2 = new ParseObject("UserGrade");
+					newUserParseObject2.put("userId",newId);
+					newUserParseObject2.saveInBackground();
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});  
+		
+
+
+//		
 //		ParseObject newUser = new ParseObject("UserGradeNew");
-		//Log.i("FUCK YOUUUU", "" + newId);
+//		//Log.i("FUCK YOUUUU", "" + newId);
 //		newUser.put("userId", newId);		
 
 		startActivity(intent);

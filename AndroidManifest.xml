@@ -173,6 +173,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="me.chatpass.chatpassme.MainActivity" />
         </activity>
+        <activity
+            android:name="me.chatpass.chatpassme.TrollPage"
+            android:label="@string/title_activity_troll_page" >
+        </activity>
     </application>
 
 </manifest>

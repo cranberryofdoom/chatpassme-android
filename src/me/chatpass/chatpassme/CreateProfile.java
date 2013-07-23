@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 
 import android.annotation.SuppressLint;
@@ -16,12 +18,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore.Images.Media;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.GetCallback;
@@ -76,64 +78,102 @@ public class CreateProfile extends Activity {
 	public void inviteContactsPage(View view) {
 		Intent intent = new Intent(this, ContactPage.class);
 
-//		// retrieve first name from profile page
-//		EditText editText = (EditText) findViewById(R.id.editText1);
-//		final String firstName = editText.getText().toString();
-//
-//		// retrieve last name from profile page
-//		EditText editText2 = (EditText) findViewById(R.id.editText2);
-//		final String lastName = editText2.getText().toString();
-//		
-//		//get user birthday, and break into day,month,year
-//		TextView birthdayText = (TextView) findViewById(R.id.textView1);
-//		String userBirthday = birthdayText.toString();
-//		String[] birthdayBits = userBirthday.split("/");
-//		String birthdayYear = birthdayBits[2];
-//		// check if they are 13, if not, send them to empty screen
-//		
-//		//get current time
-//		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-//		String currentYear = timeStamp.substring(0, 4);
-//		
-//		if (myImage == null || firstName.length() == 0 || lastName.length() == 0) {
-//			Toast.makeText(getApplicationContext(), "Please fill in all of the information", Toast.LENGTH_LONG).show();
-//		} else {
-//			//convert Bitmap myImage into byte array 
-//			ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//			myImage.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-//			photoByteArray = stream.toByteArray();
-//			
-//			// get installation ID
-//			final ParseInstallation id = ParseInstallation.getCurrentInstallation();
-//	
-//			// get User's phone number
-//			String phoneNumber = id.getString("phoneNumber");
-//	
-//			// Create a Parse object query and ask for the Users class
-//			ParseQuery<ParseObject> qUsers = ParseQuery.getQuery("Users");
-//	
-//			// Ask for the specific phone number that is correlated to the user
-//			qUsers.whereEqualTo("phoneNumber", phoneNumber);
-//			
-//			//convert byte array into a ParseFile
-//			myProfilePictureFile = new ParseFile("YOYO.jpeg", photoByteArray);
-//	
-//			// Find the first object that matches that shows up
-//			qUsers.getFirstInBackground(new GetCallback<ParseObject>() {
-//				  public void done(ParseObject object, ParseException e) {
-//				    if (e == null) {
-//				    	//update first name, last name, and image file in Parse
-//				    	object.put("firstName",firstName);
-//				    	object.put("lastName",lastName);
-//				    	object.put("imageFile",myProfilePictureFile);
-//				    	object.saveInBackground();
-//	  			    }
-//				  }
-//				});
-//			
-			// move onto contacts page
+		// retrieve first name from profile page
+		EditText editText = (EditText) findViewById(R.id.editText1);
+		final String firstName = editText.getText().toString();
+
+		// retrieve last name from profile page
+		EditText editText2 = (EditText) findViewById(R.id.editText2);
+		final String lastName = editText2.getText().toString();
+		
+		//get user birthday, and break into day,month,year
+		EditText month = (EditText) findViewById(R.id.editText3);
+		EditText day = (EditText) findViewById(R.id.editText4);
+		EditText year = (EditText) findViewById(R.id.editText5);
+		
+		Integer birthdayMonth = Integer.parseInt(month.getText().toString());
+		Integer birthdayDay = Integer.parseInt(day.getText().toString());
+		Integer birthdayYear = Integer.parseInt(year.getText().toString());
+		Log.i("bdayyr",birthdayYear.toString());
+		Log.i("bdaymonth", birthdayMonth.toString());
+		Log.i("bdayday", birthdayDay.toString());
+		
+		//get current time
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+		Integer currentDay = Integer.parseInt(timeStamp.substring(6,8));
+		Integer currentMonth = Integer.parseInt(timeStamp.substring(4,6));
+		Integer currentYear = Integer.parseInt(timeStamp.substring(0, 4));
+		Log.i("currentyr",currentYear.toString());
+		Log.i("currentmonth",currentMonth.toString());
+		Log.i("currentday",currentDay.toString());
+
+		
+		// check if they are 13, if not, send them to empty screen
+		if (birthdayYear + 13 > currentYear) {
+			Log.i("it can do math","it can do math");
+			Intent intent2 = new Intent(this,TrollPage.class);
+			startActivity(intent2);
+		}
+		if (birthdayYear + 13 == currentYear) {
+			Log.i("sdasdas","WOOooOOOOoooo");
+			if (birthdayMonth > currentMonth) {
+				Log.i("iuoiuo","HOWDYHOWDYHOWDY");
+				Intent intent3 = new Intent(this,TrollPage.class);
+				startActivity(intent3);
+			}
+		}
+		if (birthdayYear + 13 == currentYear) {
+			Log.i("dasdasd","YOYOYOYOYOY");
+			if (birthdayMonth == currentMonth) {
+				Log.i("dsadas","WXXXXXX");
+				if (birthdayDay > currentDay) {
+					Log.i("dgfdgd","CLOSE");
+					Intent intent4 = new Intent(this,TrollPage.class);
+					startActivity(intent4);
+				}
+			}
+		}
+		
+		if (myImage == null || firstName.length() == 0 || lastName.length() == 0) {
+			Toast.makeText(getApplicationContext(), "Please fill in all of the information", Toast.LENGTH_LONG).show();
+		} else {
+			//convert Bitmap myImage into byte array 
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			myImage.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+			photoByteArray = stream.toByteArray();
+			
+			// get installation ID
+			final ParseInstallation id = ParseInstallation.getCurrentInstallation();
+	
+			// get User's phone number
+			String phoneNumber = id.getString("phoneNumber");
+	
+			// Create a Parse object query and ask for the Users class
+			ParseQuery<ParseObject> qUsers = ParseQuery.getQuery("Users");
+	
+			// Ask for the specific phone number that is correlated to the user
+			qUsers.whereEqualTo("phoneNumber", phoneNumber);
+			
+			//convert byte array into a ParseFile
+			String timeStamp2 = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+			myProfilePictureFile = new ParseFile("TList" + timeStamp2 + ".jpeg", photoByteArray);
+	
+			// Find the first object that matches that shows up
+			qUsers.getFirstInBackground(new GetCallback<ParseObject>() {
+				  public void done(ParseObject object, ParseException e) {
+				    if (e == null) {
+				    	//update first name, last name, and image file in Parse
+				    	object.put("firstName",firstName);
+				    	object.put("lastName",lastName);
+				    	object.put("imageFile",myProfilePictureFile);
+				    	object.saveInBackground();
+	  			    }
+				  }
+				});
+			
+		   //move onto contacts page
 			startActivity(intent);
-		//}
+		}
 	}
 	
 	public void takeProfilePicture(View view) {

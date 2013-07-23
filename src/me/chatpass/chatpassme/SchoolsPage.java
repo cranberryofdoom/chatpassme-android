@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.parse.FindCallback;
@@ -31,6 +30,7 @@ import com.parse.ParseQuery;
 public class SchoolsPage extends Activity {
 	@SuppressLint("NewApi")
 	
+	private ConfirmSchoolDialogFragment confirmSchool = new ConfirmSchoolDialogFragment();
 	ListView myListView;
 	ArrayList<String>  schoolsArrayList = new ArrayList<String>();
 	ParseGeoPoint userLoc;
@@ -118,15 +118,15 @@ public class SchoolsPage extends Activity {
 					@Override
 					public void onItemClick(AdapterView<?> parent, View v,
 							int position, long id) {
-						Intent intent = new Intent(SchoolsPage.this, ConfirmAge.class);
-						intent.putExtra("iSchoolName", closeSchools.get(position).getString("name"));
-						startActivity(intent);
+						confirmSchool.show(getFragmentManager(),"confirmSchool");
+						
+//						Intent intent = new Intent(SchoolsPage.this, ConfirmAge.class);
+//						intent.putExtra("iSchoolName", closeSchools.get(position).getString("name"));
+//						startActivity(intent);
 					}
 		        });
 			}
 		});
-		
-        
 	}
 
 
@@ -136,7 +136,7 @@ public class SchoolsPage extends Activity {
 		@Override
 		public void onLocationChanged(Location location) {
 			
-			Log.i("dsad","DOES THIS EVEN RUN ANYMORE WTDFFDNSKLJNFDS");
+			//Log.i("dsad","DOES THIS EVEN RUN ANYMORE WTDFFDNSKLJNFDS");
 			// get and set current user location
 			if (location != null) {
 				double plong = location.getLongitude();

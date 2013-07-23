@@ -8,7 +8,6 @@ import android.view.View;
 
 import com.parse.Parse;
 import com.parse.ParseInstallation;
-import com.parse.ParseObject;
 
 public class SignUpActivity extends Activity {
 

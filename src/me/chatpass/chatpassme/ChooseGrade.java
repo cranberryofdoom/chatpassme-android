@@ -13,58 +13,47 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 public class ChooseGrade extends Activity {
-	@SuppressLint("NewApi")
+	private ConfirmGradeDialogFragment confirmGrade = new ConfirmGradeDialogFragment();
 
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();
 		setContentView(R.layout.activity_choose_grade);
 		// Show the Up button in the action bar.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            // Show the Up button in the action bar.
-            getActionBar().setDisplayHomeAsUpEnabled(true);	
-       }	
-       setTitle("SELECT YOUR GRADE");
-       
-   
-    }
-	
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			// Show the Up button in the action bar.
+			getActionBar().setDisplayHomeAsUpEnabled(true);
+		}
+		setTitle("SELECT YOUR GRADE");
+
+	}
+
 	public void moveToConfirmGradePage(View view) {
-			switch(view.getId())
-			{
-			//determines which grade user chose, moves to next page
-			//keeps their grade choice saved in the intent
-			case R.id.button1:
-				Intent intent = new Intent (this, ConfirmGrade.class);
-				intent.putExtra("Grade", "12th");
-				startActivity(intent);
-			// handle button A click;
+		switch (view.getId()) {
+		// determines which grade user chose, moves to next page
+		// keeps their grade choice saved in the intent
+		case R.id.button1:
+			confirmGrade.show(getFragmentManager(), "confirmGrade");
 			break;
-			
-			case R.id.button2:
-				Intent intent2 = new Intent (this, ConfirmGrade.class);
-				intent2.putExtra("Grade", "9th");
-				startActivity(intent2);			
+
+		case R.id.button2:
+			confirmGrade.show(getFragmentManager(), "confirmGrade");
 			break;
-			
-			case R.id.button3:
-				Intent intent3 = new Intent (this, ConfirmGrade.class);
-				intent3.putExtra("Grade", "10th");
-				startActivity(intent3);			
+
+		case R.id.button3:
+			confirmGrade.show(getFragmentManager(), "confirmGrade");
 			break;
-			
-			case R.id.button4:
-				Intent intent4 = new Intent (this, ConfirmGrade.class);
-				intent4.putExtra("Grade", "11th");
-				startActivity(intent4);			
+
+		case R.id.button4:
+			confirmGrade.show(getFragmentManager(), "confirmGrade");
 			break;
-			
-			default:
+
+		default:
 			throw new RuntimeException("Unknow button ID");
 		}
 	}
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

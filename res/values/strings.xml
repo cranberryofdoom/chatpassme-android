@@ -93,7 +93,7 @@
     <string name="no_code">No Code?</string>
     <string name="select_grade">SELECT YOUR GRADE</string>
     <string name="choose_school">CHOOSE YOUR SCHOOL</string>
-    <string name="enter_birthday">Enter your birthday (mm/dd/yyyy)</string>
+    <string name="enter_birthday">Enter your birthday</string>
     <string name="title_activity_choose_photo_type">ChoosePhotoType</string>
     <string name="choose_photo_type">Choose your profile picture</string>
     <string name="choose_existing_photo">Go to photos</string>
@@ -101,5 +101,10 @@
     <string name="title_activity_photo_handler">PhotoHandler</string>
     <string name="title_activity_take_photo">TakePhoto</string>
     <string name="capture">Capture</string>
+    <string name="title_activity_troll_page">TrollPage</string>
+    <string name="troll">Welcome to the Troll page!</string>
+    <string name="month">mm</string>
+    <string name="day">dd</string>
+    <string name="year">yyyy</string>
 
 </resources>
