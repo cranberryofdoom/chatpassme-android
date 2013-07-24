@@ -251,13 +251,32 @@ public class ViewWhistleActivity extends Activity {
 					ansCount++;
 				}
 			}
+			Log.i("ansCount bitches", "" + ansCount);
 			for (int i = 0; i < ansCount; i++) {
 				final int position = i + 1;
+				Log.i("DID I GET THIS SHIT?", "" + position);
 				ParseFile ansOptImg = voteQues.getParseFile("ansOptImg"
 						+ position);
+				Log.i("WHAT THE FUCK MAN", ansOptImg.getName());
 				byte[] dAnsOptImg = ansOptImg.getData();
-				iButton[i] = (ImageButton) photoWhistle
-						.findViewById(R.id.button1 + i);
+				Log.i("augh?", dAnsOptImg.toString());
+				if (i == 0){
+					iButton[i] = (ImageButton) photoWhistle
+							.findViewById(R.id.button1);
+				}
+				if (i == 1) {
+					iButton[i] = (ImageButton) photoWhistle
+							.findViewById(R.id.button2);
+				}
+				if (i == 2) {
+					iButton[i] = (ImageButton) photoWhistle
+							.findViewById(R.id.button3);
+				}
+				if (i == 3) {
+					iButton[i] = (ImageButton) photoWhistle
+							.findViewById(R.id.button4);
+				}
+				Log.i("WTF", iButton[i].toString());
 				iButton[i].setImageBitmap(decode.decodeSampledBitmap(
 						dAnsOptImg, 50, 50));
 				iButton[i].setOnClickListener(new View.OnClickListener() {
@@ -320,7 +339,7 @@ public class ViewWhistleActivity extends Activity {
 		// Number myUserId = myUser.userId();
 		ThisUser myUser = new ThisUser(
 				ParseInstallation.getCurrentInstallation());
-		Number myUserId = myUser.userId();
+		Number myUserId = myUser.id();
 		ParseObject voteQuesFlag = new ParseObject("VoteQuesFlag");
 		voteQuesFlag.put("flagType", "REP");
 		voteQuesFlag.put("quesId", quesId);

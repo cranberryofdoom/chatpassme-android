@@ -3,37 +3,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#E8E5DA"
-    android:gravity="top"
-    android:orientation="vertical"
-    android:padding="10dp"
-    tools:context=".HomeActivity" >
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".DecisionActivity" >
 
     <ImageView
+        android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="137dp"
         android:src="@drawable/main_page_logo" />
 
     <TextView
-        android:id="@+id/TAC"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/imageView1"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:textColor="#494949"
-        android:text="@string/TAC" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/TAC"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="10dp"
-        android:onClick="moveOntoNumberScreen"
-        android:text="@string/create_button"
-        android:background="#C0432A"
-        android:textColor="#ffffff" />
+        android:text="@string/description" />
 
 </RelativeLayout>

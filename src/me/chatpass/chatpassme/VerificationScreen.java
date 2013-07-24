@@ -81,22 +81,15 @@ public class VerificationScreen extends Activity {
 					newUserParseObject.saveInBackground();
 					
 					//place and save userId in UserSchool Class
-					ParseObject newUserParseObject2 = new ParseObject("UserGrade");
+					ParseObject newUserParseObject2 = new ParseObject("UserGradeNew");
 					newUserParseObject2.put("userId",newId);
 					newUserParseObject2.saveInBackground();
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
 			}
-		});  
-		
-
-
-//		
-//		ParseObject newUser = new ParseObject("UserGradeNew");
-//		//Log.i("FUCK YOUUUU", "" + newId);
-//		newUser.put("userId", newId);		
-
+		});  	
+		//move onto next page
 		startActivity(intent);
 	}
 

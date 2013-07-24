@@ -2,67 +2,63 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:background="#E8E5DA"
+    android:orientation="vertical"
+    android:padding="10dp" >
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/please_enter_number"
-        
-        android:layout_marginBottom="10dip" 
+        android:layout_marginBottom="10dip"
         android:layout_marginTop="10dp"
-        android:textSize="20sp"
-        android:gravity="center" />
-        
+        android:gravity="center"
+        android:text="@string/please_enter_number"
+        android:textSize="20sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp" >
 
         <TextView
             android:id="@+id/editText1"
             android:layout_width="65dp"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="@string/the_one"
-            android:gravity="center" />
-        
+            android:gravity="center"
+            android:hint="@string/the_one" />
 
         <EditText
             android:id="@+id/editText2"
-            android:layout_width="256dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
+            android:gravity="center"
             android:hint="@string/enter_number"
-            android:inputType="phone" 
-            android:gravity="center" />
-            
-
+            android:inputType="phone" />
     </LinearLayout>
 
     <Button
         android:id="@+id/button1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="#C0432A"
         android:gravity="center"
         android:onClick="moveOntoVerificationScreen"
-        android:text="@string/continue_button" 
-        android:layout_marginBottom="10dip" 
-        />
+        android:text="@string/continue_button"
+        android:textColor="#ffffff" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/receive_confirmation" 
-        android:gravity="center" />
-        
+        android:gravity="center"
+        android:text="@string/receive_confirmation" />
 
-</LinearLayout>
+</LinearLayout> <!-- Need to add part when someone clicks on the continue button -->
 
-<!-- Need to add part when someone clicks on the continue button -->
 
-<!-- In the future, Use with id for EditText to take the phone number entered into the text box 
- -->
+<!-- In the future, Use with id for EditText to take the phone number entered into the text box -->

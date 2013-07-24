@@ -16,17 +16,11 @@ import com.parse.ParseAnalytics;
 import com.parse.ParseInstallation;
 
 public class MainActivity extends Activity {
-
 	private ImageView imageTracker;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		// Get Installation Id
-		final ParseInstallation id = ParseInstallation.getCurrentInstallation();
-
-		// Set the view
 		setContentView(R.layout.activity_main);
 		
 		// Set action bar color

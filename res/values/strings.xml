@@ -106,5 +106,8 @@
     <string name="month">mm</string>
     <string name="day">dd</string>
     <string name="year">yyyy</string>
+    <string name="title_activity_decision">Chatpassme</string>
+    <string name="TAC">By creating an account you acknowledge that you have read and accept our Terms of Service, Community Standards and Privacy Policy.</string>
+    <string name="description">The mobile network for high schoolers</string>
 
 </resources>

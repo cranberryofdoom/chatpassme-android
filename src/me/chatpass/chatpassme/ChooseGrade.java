@@ -32,21 +32,37 @@ public class ChooseGrade extends Activity {
 
 	public void moveToConfirmGradePage(View view) {
 		switch (view.getId()) {
-		// determines which grade user chose, moves to next page
+		// determines which grade user chose, moves to confirm grade fragment
 		// keeps their grade choice saved in the intent
 		case R.id.button1:
+			Button button = (Button) findViewById(R.id.button1);
+			Bundle b = new Bundle();
+			b.putString("userGrade", button.getText().toString());
+			confirmGrade.setArguments(b);
 			confirmGrade.show(getFragmentManager(), "confirmGrade");
 			break;
 
 		case R.id.button2:
+			Button button2 = (Button) findViewById(R.id.button2);
+			Bundle b2 = new Bundle();
+			b2.putString("userGrade", button2.getText().toString());
+			confirmGrade.setArguments(b2);
 			confirmGrade.show(getFragmentManager(), "confirmGrade");
 			break;
 
 		case R.id.button3:
+			Button button3 = (Button) findViewById(R.id.button3);
+			Bundle b3 = new Bundle();
+			b3.putString("userGrade", button3.getText().toString());
+			confirmGrade.setArguments(b3);
 			confirmGrade.show(getFragmentManager(), "confirmGrade");
 			break;
 
 		case R.id.button4:
+			Button button4 = (Button) findViewById(R.id.button4);
+			Bundle b4 = new Bundle();
+			b4.putString("userGrade", button4.getText().toString());
+			confirmGrade.setArguments(b4);
 			confirmGrade.show(getFragmentManager(), "confirmGrade");
 			break;
 

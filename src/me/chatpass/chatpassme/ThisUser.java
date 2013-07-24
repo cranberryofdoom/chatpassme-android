@@ -1,12 +1,14 @@
 package me.chatpass.chatpassme;
 
+import android.util.Log;
+
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 public class ThisUser {
-
 	private Number myUserId;
 	private String phoneNumber;
 	private ParseObject myUserParseObject;
@@ -14,42 +16,56 @@ public class ThisUser {
 
 	// Constructor
 	public ThisUser(final ParseInstallation id) {
-
-		// Get this user's phone number
 		phoneNumber = id.getString("phoneNumber");
+		Log.i("THIS IS MY PHONE NUMBER AHHH", "" + phoneNumber);
 
-		// Create a ParseObject query and ask for the Users class
 		ParseQuery<ParseObject> qUsers = ParseQuery.getQuery("Users");
-
-		// Ask for the specific phone number that is correlated to the user
 		qUsers.whereEqualTo("phoneNumber", phoneNumber);
-
-		// Get this user's id
 		try {
 			myUserParseObject = qUsers.getFirst();
-			myUserId = qUsers.getFirst().getNumber("userId");
 		} catch (ParseException e) {
-			e.printStackTrace();
 		}
-		
-		ParseQuery<ParseObject> qUserSchool = ParseQuery.getQuery("UserSchool");
-		qUserSchool.whereEqualTo("userId", myUserId);
-		try {
-			mySchoolId = qUserSchool.getFirst().getNumber("schoolId");
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-		}
+
 	}
-	
-	public Number userId() {
+
+	public boolean exists() {
+		if (phoneNumber == null) {
+			return false;
+		}
+		if (myUserParseObject == null) {
+			return false;
+		}
+		if (myUserParseObject.getNumber("userId") == null) {
+			return false;
+		}
+		return true;
+	}
+
+	public String phoneNumber() {
+		return phoneNumber;
+	}
+
+	public Number id() {
+		myUserId = myUserParseObject.getNumber("userId");
 		return myUserId;
 	}
-	
-	public ParseObject userParseObject() {
+
+	public ParseObject parseObject() {
 		return myUserParseObject;
 	}
-	
-	public Number userSchoolId() {
+
+	public Number schoolId() {
+		ParseQuery<ParseObject> qUserSchool = ParseQuery.getQuery("UserSchool");
+		qUserSchool.whereEqualTo("userId", myUserId);
+		qUserSchool.getFirstInBackground(new GetCallback<ParseObject>() {
+
+			@Override
+			public void done(ParseObject object, ParseException e) {
+				if (e == null) {
+					mySchoolId = object.getNumber("schoolId");
+				}
+			}
+		});
 		return mySchoolId;
 	}
 

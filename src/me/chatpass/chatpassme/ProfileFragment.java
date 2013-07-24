@@ -39,8 +39,6 @@ public class ProfileFragment extends Fragment {
 	private int clikCount;
 	private List<ParseObject> mClikObjects = new ArrayList<ParseObject>();
 	private List<ParseObject> mWhistleObjects = new ArrayList<ParseObject>();
-	private byte[] quesImg;
-	private byte[] userImg;
 
 	private DecodeSampledBitmap decode = new DecodeSampledBitmap();
 	private GetPlaceholder placeholder;

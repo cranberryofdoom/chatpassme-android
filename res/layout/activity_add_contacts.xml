@@ -2,8 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#E8E5DA"
+    android:padding="10dp"
     tools:context=".AddContactsActivity" >
-    
+
     <ListView
         android:id="@+id/add_contacts_list_view"
         android:layout_width="match_parent"
