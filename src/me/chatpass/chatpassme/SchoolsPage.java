@@ -118,6 +118,9 @@ public class SchoolsPage extends Activity {
 					@Override
 					public void onItemClick(AdapterView<?> parent, View v,
 							int position, long id) {
+						Bundle b = new Bundle();
+						b.putString("iSchoolName", closeSchools.get(position).getString("name"));
+						confirmSchool.setArguments(b);
 						confirmSchool.show(getFragmentManager(),"confirmSchool");
 						
 //						Intent intent = new Intent(SchoolsPage.this, ConfirmAge.class);

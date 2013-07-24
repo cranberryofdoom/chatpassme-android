@@ -133,9 +133,10 @@ public class CreateProfile extends Activity {
 				}
 			}
 		}
-		
+		//make sure they filled out first name, last name, and picture
 		if (myImage == null || firstName.length() == 0 || lastName.length() == 0) {
 			Toast.makeText(getApplicationContext(), "Please fill in all of the information", Toast.LENGTH_LONG).show();
+		//move onto next screen
 		} else {
 			//convert Bitmap myImage into byte array 
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
